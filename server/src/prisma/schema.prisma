@@ -20,6 +20,12 @@ model User {
   password String 
   createdAt DateTime @default(now())
   image String?
+  role ROLE @default(customer)
   isVerified Boolean @default(false)
   updatedAt DateTime @updatedAt
+}
+
+enum ROLE{
+  admin
+  customer
 }
