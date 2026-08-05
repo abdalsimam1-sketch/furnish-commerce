@@ -7,6 +7,8 @@ const morgan = require("morgan");
 
 const app = express();
 
+const { authRouter } = require("./routes/auth.route");
+
 const { errorHandler } = require("./middleware/errorHandler");
 const { notFound } = require("./middleware/notFound");
 
@@ -38,6 +40,7 @@ app.use(
 );
 
 //route
+app.use("/api/v1/auth", authRouter);
 
 //error handling
 app.all("*any", notFound);
