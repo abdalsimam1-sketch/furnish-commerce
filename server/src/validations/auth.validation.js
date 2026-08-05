@@ -5,7 +5,7 @@ const signupSchema = Joi.object({
   password: Joi.string()
     .required()
     .pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$!%*?&])[A-Za-z\d@#$!%*?&]{8,30}$/,
     )
     .messages({
       "string.pattern.base": "Password is too weak.",
