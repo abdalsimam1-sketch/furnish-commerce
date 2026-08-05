@@ -22,6 +22,8 @@ model User {
   image String?
   role ROLE @default(customer)
   isVerified Boolean @default(false)
+  verificationTokenHash String?
+  verificationTokenExpiresAt DateTime?
   updatedAt DateTime @updatedAt
 }
 
