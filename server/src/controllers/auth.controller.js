@@ -5,6 +5,7 @@ const {
 } = require("../errors");
 const bcrypt = require("bcryptjs");
 const { prisma } = require("../config/prisma");
+const jwt = require("jsonwebtoken");
 
 const { signupSchema, loginSchema } = require("../validations/auth.validation");
 const { hashPassword } = require("../utils/hashPassword");
@@ -120,7 +121,40 @@ const logout = async (req, res) => {
   });
 };
 
-const roatateTokens = async (req, res) => {};
+const rotateTokens = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) {
+    throw new UnauthenticatedError("Invalid or expired tokens");
+  }
+  let payload;
+
+  try {
+    payload = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+  } catch (error) {
+    throw new UnauthenticatedError("Invalid or expired tokens");
+  }
+
+  const { accessToken, refreshToken: newRefreshToken } = generateCookieTokens({
+    id: payload.id,
+    role: payload.role,
+  });
+
+  res.cookie("accessToken", accessToken, {
+    ...cookieOptions,
+    maxAge: 15 * 60 * 1000,
+  });
+
+  res.cookie("refreshToken", newRefreshToken, {
+    ...cookieOptions,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Tokens rotated successfully",
+    data: {},
+  });
+};
 
 const getMe = async (req, res) => {};
 const verifyEmail = async (req, res) => {};
@@ -134,7 +168,7 @@ module.exports = {
   signup,
   login,
   logout,
-  roatateTokens,
+  rotateTokens,
   getMe,
   googleLogin,
   resendVerificationEmail,
