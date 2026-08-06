@@ -1,12 +1,19 @@
-const { BadRequestError, ConflictError } = require("../errors");
+const {
+  BadRequestError,
+  ConflictError,
+  UnauthenticatedError,
+} = require("../errors");
+const bcrypt = require("bcryptjs");
 const { prisma } = require("../config/prisma");
-const { signupSchema } = require("../validations/auth.validation");
+
+const { signupSchema, loginSchema } = require("../validations/auth.validation");
 const { hashPassword } = require("../utils/hashPassword");
 const { sendVerificationEmail } = require("../utils/sendVerificationEmail");
 const { generateCryptoToken } = require("../utils/generateCryptoToken");
+const { generateCookieTokens } = require("../utils/generateCookieTokens");
+const { cookieOptions } = require("../utils/cookieOptions");
 
 const signup = async (req, res) => {
-  const { email, name, password, phone, confirmPassword } = req.body;
   const { error, value } = signupSchema.validate(req.body);
   if (error) {
     throw new BadRequestError(error.details[0].message);
@@ -55,7 +62,52 @@ const signup = async (req, res) => {
   });
 };
 
-const login = async (req, res) => {};
+const login = async (req, res) => {
+  const { value, error } = loginSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.details[0].message);
+  }
+  let user = await prisma.user.findUnique({
+    where: {
+      email: value.email,
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      isVerified: true,
+      role: true,
+      password: true,
+    },
+  });
+  if (!user) {
+    throw new UnauthenticatedError("Invalid email or password");
+  }
+  const comparePassword = await bcrypt.compare(value.password, user.password);
+  if (!comparePassword) {
+    throw new UnauthenticatedError("Invalid email or password");
+  }
+  if (user.isVerified === false) {
+    throw new UnauthenticatedError("Verify Account");
+  }
+  const { password, ...safeUser } = user;
+
+  const { accessToken, refreshToken } = generateCookieTokens(safeUser);
+  res.cookie("accessToken", accessToken, {
+    ...cookieOptions,
+    maxAge: 15 * 60 * 1000,
+  });
+  res.cookie("refreshToken", refreshToken, {
+    ...cookieOptions,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "User logged in successfully",
+    data: { user: safeUser },
+  });
+};
 
 const logout = async (req, res) => {};
 
