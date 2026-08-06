@@ -109,7 +109,16 @@ const login = async (req, res) => {
   });
 };
 
-const logout = async (req, res) => {};
+const logout = async (req, res) => {
+  res.clearCookie("accessToken", cookieOptions);
+  res.clearCookie("refreshToken", cookieOptions);
+
+  res.status(200).json({
+    success: true,
+    message: "User logged out successfully",
+    data: {},
+  });
+};
 
 const roatateTokens = async (req, res) => {};
 
