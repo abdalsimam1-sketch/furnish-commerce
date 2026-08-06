@@ -156,12 +156,41 @@ const rotateTokens = async (req, res) => {
   });
 };
 
-const getMe = async (req, res) => {};
+const getMe = async (req, res) => {
+  const { id } = req.user;
+  let user = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      phone: true,
+    },
+  });
+  if (!user) {
+    throw new UnauthenticatedError();
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User found",
+    data: {
+      user,
+    },
+  });
+};
+
 const verifyEmail = async (req, res) => {};
 
 const googleLogin = async (req, res) => {};
+
 const resendVerificationEmail = async (req, res) => {};
+
 const forgotPassword = async (req, res) => {};
+
 const resetPassword = async (req, res) => {};
 
 module.exports = {
