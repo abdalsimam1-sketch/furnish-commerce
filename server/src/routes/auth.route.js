@@ -3,7 +3,7 @@ const {
   signup,
   login,
   logout,
-  roatateTokens,
+  rotateTokens,
   getMe,
   googleLogin,
   resendVerificationEmail,
@@ -15,7 +15,7 @@ const {
 authRouter.post("/login", login);
 authRouter.post("/signup", signup);
 authRouter.post("/logout", logout);
-authRouter.post("/rotate-tokens", roatateTokens);
+authRouter.post("/rotate-tokens", rotateTokens);
 authRouter.get("/me", getMe);
 authRouter.post("/google-login", googleLogin);
 authRouter.post("/forgot-password", forgotPassword);
