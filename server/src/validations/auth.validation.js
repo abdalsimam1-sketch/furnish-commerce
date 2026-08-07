@@ -23,7 +23,27 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
+const passwordSchema = Joi.object({
+  password: Joi.string()
+    .required()
+    .pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$!%*?&])[A-Za-z\d@#$!%*?&]{8,30}$/,
+    )
+    .messages({
+      "string.pattern.base": "Password is too weak.",
+    }),
+  confirmPassword: Joi.string().required().valid(Joi.ref("password")).messages({
+    "any.only": "Passwords do not match.",
+  }),
+});
+
+const emailSchema = Joi.object({
+  email: Joi.string().required().email(),
+});
+
 module.exports = {
   signupSchema,
   loginSchema,
+  passwordSchema,
+  emailSchema,
 };
