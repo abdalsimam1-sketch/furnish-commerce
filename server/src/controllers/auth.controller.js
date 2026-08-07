@@ -237,6 +237,9 @@ const googleLogin = async (req, res) => {};
 
 const resendVerificationEmail = async (req, res) => {
   const { value, error } = emailSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.details[0].message);
+  }
   const { cryptoToken, cryptoTokenHash } = generateCryptoToken();
   let user = await prisma.user.findUnique({
     where: {
@@ -272,8 +275,10 @@ const resendVerificationEmail = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  const { email } = req.body;
   const { error, value } = emailSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.details[0].message);
+  }
   let user = await prisma.user.findUnique({
     where: {
       email,
