@@ -26,7 +26,12 @@ model User {
   verificationTokenExpiresAt DateTime?
   resetPasswordTokenHash String?
   resetPasswordTokenExpiresAt DateTime?
+  authProvider AuthProvider @default(signup)
   updatedAt DateTime @updatedAt
+}
+enum AuthProvider{
+  signup
+  google
 }
 
 enum ROLE{
