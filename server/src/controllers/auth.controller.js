@@ -7,7 +7,13 @@ const bcrypt = require("bcryptjs");
 const { prisma } = require("../config/prisma");
 const jwt = require("jsonwebtoken");
 
-const { signupSchema, loginSchema } = require("../validations/auth.validation");
+const {
+  signupSchema,
+  loginSchema,
+  passwordSchema,
+  emailSchema,
+} = require("../validations/auth.validation");
+
 const { hashPassword } = require("../utils/hashPassword");
 const { sendVerificationEmail } = require("../utils/sendVerificationEmail");
 const { generateCryptoToken } = require("../utils/generateCryptoToken");
@@ -230,11 +236,11 @@ const verifyEmail = async (req, res) => {
 const googleLogin = async (req, res) => {};
 
 const resendVerificationEmail = async (req, res) => {
-  const { email } = req.body;
+  const { value, error } = emailSchema.validate(req.body);
   const { cryptoToken, cryptoTokenHash } = generateCryptoToken();
   let user = await prisma.user.findUnique({
     where: {
-      email,
+      email: value.email,
     },
     select: {
       email: true,
@@ -245,7 +251,7 @@ const resendVerificationEmail = async (req, res) => {
   if (user && !user.isVerified) {
     user = await prisma.user.update({
       where: {
-        email,
+        email: value.email,
       },
       data: {
         verificationTokenExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
@@ -267,7 +273,7 @@ const resendVerificationEmail = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
-
+  const { error, value } = emailSchema.validate(req.body);
   let user = await prisma.user.findUnique({
     where: {
       email,
@@ -315,7 +321,62 @@ const forgotPassword = async (req, res) => {
   });
 };
 
-const resetPassword = async (req, res) => {};
+const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { error, value } = passwordSchema.validate(req.body);
+
+  if (error) {
+    throw new BadRequestError(error.details[0].message);
+  }
+  const hashedCryptoToken = hashCryptoToken(token);
+  let user = await prisma.user.findFirst({
+    where: {
+      resetPasswordTokenHash: hashedCryptoToken,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      image: true,
+      role: true,
+      isVerified: true,
+      resetPasswordTokenExpiresAt: true,
+    },
+  });
+  if (!user) {
+    throw new BadRequestError("Invalid or expired token");
+  }
+  if (user.resetPasswordTokenExpiresAt < new Date()) {
+    throw new BadRequestError("Invalid or expired token");
+  }
+  const newPassword = await hashPassword(value.password);
+  user = await prisma.user.update({
+    where: {
+      email: user.email,
+    },
+    data: {
+      password: newPassword,
+      resetPasswordTokenExpiresAt: null,
+      resetPasswordTokenHash: null,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      image: true,
+      role: true,
+      isVerified: true,
+    },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Password reset successfully",
+    data: { user },
+  });
+};
 
 module.exports = {
   signup,
