@@ -17,7 +17,7 @@ model User {
   name String 
   email String @unique
   phone String @unique
-  password String 
+  password String?
   createdAt DateTime @default(now())
   image String?
   role ROLE @default(customer)
