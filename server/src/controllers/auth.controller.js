@@ -13,6 +13,7 @@ const { sendVerificationEmail } = require("../utils/sendVerificationEmail");
 const { generateCryptoToken } = require("../utils/generateCryptoToken");
 const { generateCookieTokens } = require("../utils/generateCookieTokens");
 const { cookieOptions } = require("../utils/cookieOptions");
+const { hashCryptoToken } = require("../utils/hashCryptoToken");
 
 const signup = async (req, res) => {
   const { error, value } = signupSchema.validate(req.body);
@@ -183,7 +184,47 @@ const getMe = async (req, res) => {
   });
 };
 
-const verifyEmail = async (req, res) => {};
+const verifyEmail = async (req, res) => {
+  const { token } = req.params;
+  const cryptoTokenHash = hashCryptoToken(token);
+  let user = await prisma.user.findFirst({
+    where: {
+      verificationTokenHash: cryptoTokenHash,
+    },
+  });
+  if (!user) {
+    throw new BadRequestError("Invalid or expired verification token");
+  }
+  if (user.verificationTokenExpiresAt < new Date()) {
+    throw new BadRequestError("Invalid or expired verification token");
+  }
+
+  user = await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      isVerified: true,
+      verificationTokenHash: null,
+      verificationTokenExpiresAt: null,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      phone: true,
+      isVerified: true,
+    },
+  });
+  res.status(200).json({
+    success: true,
+    message: "User verified successfully",
+    data: {
+      user,
+    },
+  });
+};
 
 const googleLogin = async (req, res) => {};
 
