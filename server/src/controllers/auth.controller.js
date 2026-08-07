@@ -14,6 +14,7 @@ const { generateCryptoToken } = require("../utils/generateCryptoToken");
 const { generateCookieTokens } = require("../utils/generateCookieTokens");
 const { cookieOptions } = require("../utils/cookieOptions");
 const { hashCryptoToken } = require("../utils/hashCryptoToken");
+const { sendPasswordResetEmail } = require("../utils/sendPasswordResetEmail");
 
 const signup = async (req, res) => {
   const { error, value } = signupSchema.validate(req.body);
@@ -254,7 +255,7 @@ const resendVerificationEmail = async (req, res) => {
     try {
       await sendVerificationEmail(user.email, cryptoToken);
     } catch (error) {
-      console.log(error);
+      console.log("Email error: ", error);
     }
   }
   res.status(200).json({
@@ -264,7 +265,55 @@ const resendVerificationEmail = async (req, res) => {
   });
 };
 
-const forgotPassword = async (req, res) => {};
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  let user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      isVerified: true,
+    },
+  });
+  if (user) {
+    const { cryptoToken, cryptoTokenHash } = generateCryptoToken();
+    user = await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        resetPasswordTokenHash: cryptoTokenHash,
+        resetPasswordTokenExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        isVerified: true,
+      },
+    });
+    try {
+      await sendPasswordResetEmail(user.email, cryptoToken);
+    } catch (error) {
+      console.log("Email error: ", error);
+    }
+  }
+  res.status(200).json({
+    success: true,
+    message: "If user exists, a reset link will sent",
+    data: {
+      user,
+    },
+  });
+};
 
 const resetPassword = async (req, res) => {};
 
