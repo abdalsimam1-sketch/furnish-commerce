@@ -228,7 +228,41 @@ const verifyEmail = async (req, res) => {
 
 const googleLogin = async (req, res) => {};
 
-const resendVerificationEmail = async (req, res) => {};
+const resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
+  const { cryptoToken, cryptoTokenHash } = generateCryptoToken();
+  let user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      email: true,
+      isVerified: true,
+    },
+  });
+
+  if (user && !user.isVerified) {
+    user = await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        verificationTokenExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
+        verificationTokenHash: cryptoTokenHash,
+      },
+    });
+    try {
+      await sendVerificationEmail(user.email, cryptoToken);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  res.status(200).json({
+    success: true,
+    message: "If user exists a verification email will be resent",
+    data: {},
+  });
+};
 
 const forgotPassword = async (req, res) => {};
 
