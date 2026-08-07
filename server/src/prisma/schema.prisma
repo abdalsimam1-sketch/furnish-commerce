@@ -24,6 +24,8 @@ model User {
   isVerified Boolean @default(false)
   verificationTokenHash String?
   verificationTokenExpiresAt DateTime?
+  resetPasswordTokenHash String?
+  resetPasswordTokenExpiresAt DateTime?
   updatedAt DateTime @updatedAt
 }
 
