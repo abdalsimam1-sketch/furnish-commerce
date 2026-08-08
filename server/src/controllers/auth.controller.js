@@ -102,12 +102,30 @@ const login = async (req, res) => {
   if (!comparePassword) {
     throw new UnauthenticatedError("Invalid email or password");
   }
+
   if (user.isVerified === false) {
     throw new UnauthenticatedError("Verify Account");
   }
-  const { password, ...safeUser } = user;
 
-  const { accessToken, refreshToken } = generateCookieTokens(safeUser);
+  const { accessToken, refreshToken } = generateCookieTokens(user);
+
+  const refreshTokenHash = hashCryptoToken(refreshToken);
+  user = await prisma.user.update({
+    where: {
+      email: user.email,
+    },
+    data: {
+      refreshTokenHash,
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      isVerified: true,
+      role: true,
+    },
+  });
+
   res.cookie("accessToken", accessToken, {
     ...cookieOptions,
     maxAge: 15 * 60 * 1000,
@@ -120,11 +138,32 @@ const login = async (req, res) => {
   res.status(200).json({
     success: true,
     message: "User logged in successfully",
-    data: { user: safeUser },
+    data: { user },
   });
 };
 
 const logout = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (refreshToken) {
+    const refreshTokenHash = hashCryptoToken(refreshToken);
+    const user = await prisma.user.findFirst({
+      where: {
+        refreshTokenHash,
+      },
+    });
+
+    if (user) {
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          refreshTokenHash: null,
+        },
+      });
+    }
+  }
+
   res.clearCookie("accessToken", cookieOptions);
   res.clearCookie("refreshToken", cookieOptions);
 
@@ -141,6 +180,15 @@ const rotateTokens = async (req, res) => {
     throw new UnauthenticatedError("Invalid or expired tokens");
   }
   let payload;
+  const refreshTokenHash = hashCryptoToken(refreshToken);
+  const user = await prisma.user.findFirst({
+    where: {
+      refreshTokenHash,
+    },
+  });
+  if (!user) {
+    throw new UnauthenticatedError("Invalid or expired tokens");
+  }
 
   try {
     payload = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
@@ -151,6 +199,16 @@ const rotateTokens = async (req, res) => {
   const { accessToken, refreshToken: newRefreshToken } = generateCookieTokens({
     id: payload.id,
     role: payload.role,
+  });
+  const newRefreshTokenHash = hashCryptoToken(newRefreshToken);
+
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      refreshTokenHash: newRefreshTokenHash,
+    },
   });
 
   res.cookie("accessToken", accessToken, {
@@ -244,7 +302,21 @@ const googleLogin = async (req, res) => {
   if (!user) {
     return res.redirect(`${process.env.CLIENT_URL}/auth`);
   }
+  if (!user.email) {
+    return res.redirect(`${process.env.CLIENT_URL}/auth`);
+  }
   const { accessToken, refreshToken } = generateCookieTokens(user);
+
+  const refreshTokenHash = hashCryptoToken(refreshToken);
+
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      refreshTokenHash,
+    },
+  });
   res.cookie("accessToken", accessToken, {
     ...cookieOptions,
     maxAge: 15 * 60 * 1000,
@@ -341,9 +413,7 @@ const forgotPassword = async (req, res) => {
   res.status(200).json({
     success: true,
     message: "If user exists, a reset link will sent",
-    data: {
-      user,
-    },
+    data: {},
   });
 };
 
@@ -385,6 +455,7 @@ const resetPassword = async (req, res) => {
       password: newPassword,
       resetPasswordTokenExpiresAt: null,
       resetPasswordTokenHash: null,
+      refreshTokenHash: null,
     },
     select: {
       id: true,
