@@ -89,8 +89,14 @@ const login = async (req, res) => {
       password: true,
     },
   });
+
   if (!user) {
     throw new UnauthenticatedError("Invalid email or password");
+  }
+  if (!user.password) {
+    throw new UnauthenticatedError(
+      "To login without password, please use the Google login option",
+    );
   }
   const comparePassword = await bcrypt.compare(value.password, user.password);
   if (!comparePassword) {
@@ -233,7 +239,22 @@ const verifyEmail = async (req, res) => {
   });
 };
 
-const googleLogin = async (req, res) => {};
+const googleLogin = async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    return res.redirect(`${process.env.CLIENT_URL}/auth`);
+  }
+  const { accessToken, refreshToken } = generateCookieTokens(user);
+  res.cookie("accessToken", accessToken, {
+    ...cookieOptions,
+    maxAge: 15 * 60 * 1000,
+  });
+  res.cookie("refreshToken", refreshToken, {
+    ...cookieOptions,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+  res.redirect(process.env.CLIENT_URL);
+};
 
 const resendVerificationEmail = async (req, res) => {
   const { value, error } = emailSchema.validate(req.body);
@@ -281,7 +302,7 @@ const forgotPassword = async (req, res) => {
   }
   let user = await prisma.user.findUnique({
     where: {
-      email,
+      email: value.email,
     },
     select: {
       id: true,
@@ -296,7 +317,7 @@ const forgotPassword = async (req, res) => {
     const { cryptoToken, cryptoTokenHash } = generateCryptoToken();
     user = await prisma.user.update({
       where: {
-        email,
+        email: value.email,
       },
       data: {
         resetPasswordTokenHash: cryptoTokenHash,
