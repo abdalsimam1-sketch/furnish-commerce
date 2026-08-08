@@ -14,9 +14,24 @@ const {
 
 const { authentication } = require("../middleware/authentication");
 const passport = require("passport");
+const { rateLimit } = require("express-rate-limit");
 
-authRouter.post("/login", login);
-authRouter.post("/signup", signup);
+authRouter.post(
+  "/login",
+  rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 5,
+  }),
+  login,
+);
+authRouter.post(
+  "/signup",
+  rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 5,
+  }),
+  signup,
+);
 authRouter.post("/logout", logout);
 authRouter.post("/rotate-tokens", rotateTokens);
 authRouter.get("/me", authentication, getMe);
@@ -32,8 +47,22 @@ authRouter.get(
   }),
   googleLogin,
 );
-authRouter.post("/forgot-password", forgotPassword);
-authRouter.post("/resend-verification-email", resendVerificationEmail);
+authRouter.post(
+  "/forgot-password",
+  rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 3,
+  }),
+  forgotPassword,
+);
+authRouter.post(
+  "/resend-verification-email",
+  rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 5,
+  }),
+  resendVerificationEmail,
+);
 authRouter.get("/verify-email/:token", verifyEmail);
 authRouter.post("/reset-password/:token", resetPassword);
 
