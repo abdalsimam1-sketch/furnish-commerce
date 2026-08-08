@@ -11,11 +11,10 @@ passport.use(
     },
 
     async (accessToken, refreshToken, profile, done) => {
-      console.log(profile);
       try {
-        const name = profile.displayName;
-        const email = profile.emails[0].value;
-        const image = profile.photos[0].value;
+        const name = profile?.displayName;
+        const email = profile?.emails?.[0]?.value;
+        const image = profile?.photos?.[0]?.value;
 
         let user = await prisma.user.findUnique({
           where: {
