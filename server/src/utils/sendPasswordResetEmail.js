@@ -13,7 +13,7 @@ const sendPasswordResetEmail = async (sendTo, token) => {
   const email = await transporter.sendMail({
     from: process.env.USER_EMAIL,
     to: sendTo,
-    subject: "Verify account",
+    subject: "Resend Password",
     html: `<div style="font-family: sans-serif; padding: 20px; color: #333;">
         <h1>Welcome to Furnish Commerce!</h1>
         <p>Please click the button below to complete your password reset:</p>
