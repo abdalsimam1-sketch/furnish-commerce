@@ -67,6 +67,14 @@
 .auth-form {
   width: 100%;
 }
+
+.forgot-password-link {
+  font-size: 0.75rem;
+  text-decoration: underline;
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+}
 @media (min-width: 768px) {
   .auth-page > section {
     flex: 1;
