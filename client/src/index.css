@@ -23,3 +23,65 @@
   --fs-body: 1rem;
   --fs-small: 0.875rem;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
+.input {
+  border: none;
+  outline: none;
+  border-bottom: 1px solid gray;
+}
+.input-wrap {
+  position: relative;
+}
+.input-error {
+  right: 0;
+  top: 0;
+  font-size: 0.75rem;
+  color: var(--color-danger);
+  position: absolute;
+  font-weight: bold;
+}
+.auth-btn.btn,
+.auth-btn.btn:hover {
+  background-color: var(--color-dark-70);
+  color: var(--color-white);
+}
+.google-btn.btn,
+.google-btn.btn:hover {
+  background-color: var(--color-white);
+  color: var(--color-dark-90);
+  border: 1px solid rgb(128, 128, 128);
+}
+
+.auth-image {
+  height: 50vh;
+  background-image: url(/authImage.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.auth-form-section {
+  height: auto;
+}
+.auth-form {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .auth-page > section {
+    flex: 1;
+  }
+  .auth-image {
+    height: 100vh;
+  }
+  .auth-form-section {
+    height: 100vh;
+  }
+  .auth-form {
+    max-width: 500px;
+    width: 90%;
+  }
+}
+
+@media (min-width: 1024px) {
+}
