@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const { passport } = require("./config/passport");
 
 const app = express();
 
@@ -17,6 +18,7 @@ const { notFound } = require("./middleware/notFound");
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 //security
 app.use(
