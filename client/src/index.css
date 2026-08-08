@@ -1,0 +1,25 @@
+:root {
+  /* Colors */
+  --color-black: #000000;
+  --color-dark-90: #1a1a1a;
+  --color-dark-70: #333333;
+  --color-gray: #7a7a7a;
+  --color-gray-light: #e0e0e0;
+  --color-white: #ffffff;
+
+  --color-primary: #3b6ef5;
+  --color-success: #2fb56a;
+  --color-warning: #f5a623;
+  --color-danger: #f0503c;
+
+  /* Typography */
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+
+  --fs-hero: clamp(2.5rem, 5vw, 4rem);
+  --fs-h1: clamp(2rem, 4vw, 3rem);
+  --fs-h2: clamp(1.5rem, 3vw, 2.25rem);
+  --fs-h3: clamp(1.25rem, 2vw, 1.75rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+}
