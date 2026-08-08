@@ -27,6 +27,7 @@ model User {
   resetPasswordTokenHash String?
   resetPasswordTokenExpiresAt DateTime?
   authProvider AuthProvider @default(signup)
+  refreshTokenHash String?
   updatedAt DateTime @updatedAt
 }
 enum AuthProvider{
