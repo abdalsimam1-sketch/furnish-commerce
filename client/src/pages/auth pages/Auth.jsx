@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Input } from "../components/Input";
+import { Input } from "../../components/Input";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 const AUTH_MODES = {
@@ -197,7 +197,7 @@ export const Auth = () => {
                 type="button"
                 className="btn google-btn w-100 text-nowrap "
                 onClick={() =>
-                  (window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/google`)
+                  (window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`)
                 }
               >
                 <i className="bi bi-google  p-0"></i> Continue with Google
