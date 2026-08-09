@@ -75,6 +75,10 @@
   right: 0;
   cursor: pointer;
 }
+.forgot-password-link > a {
+  text-decoration: none;
+  color: var(--color-dark-70);
+}
 @media (min-width: 768px) {
   .auth-page > section {
     flex: 1;

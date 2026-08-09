@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input } from "../../components/Input";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const AUTH_MODES = {
   SIGNUP: "signup",
@@ -153,7 +153,7 @@ export const Auth = () => {
               ></Input>
               {authMode === AUTH_MODES.LOGIN && (
                 <span className="forgot-password-link text-muted">
-                  Forgot password
+                  <Link to="/forgot-password">Forgot password</Link>
                 </span>
               )}
             </div>
