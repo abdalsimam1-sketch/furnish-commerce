@@ -46,7 +46,8 @@ export const useAuth = () => {
   });
 
   const resetPasswordMutation = useMutation({
-    mutationFn: authServices.resetPassword,
+    mutationFn: ({ token, payload }) =>
+      authServices.resetPassword(token, payload),
   });
 
   return {
