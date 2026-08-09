@@ -3,6 +3,7 @@ import { Input } from "../../components/Input";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AUTH_MODES = {
   SIGNUP: "signup",
@@ -17,7 +18,8 @@ export const Auth = () => {
     handleSubmit,
     getValues,
   } = useForm();
-  const { loginMutation, signupMutation } = useAuth();
+  const { loginMutation, signupMutation, resendVerificationEmailMutation } =
+    useAuth();
   const navigate = useNavigate();
 
   const [authMode, setAuthMode] = useState(AUTH_MODES.LOGIN);
@@ -91,7 +93,7 @@ export const Auth = () => {
 
           <div className="errors-section">
             {authMode === AUTH_MODES.LOGIN && loginMutation.error && (
-              <div className="alert alert-danger w-100 ">
+              <div className="alert alert-danger w-100 d-flex justify-content-between align-items-center">
                 <span>
                   {loginMutation.error?.response?.status === 429 ? (
                     <>Too many requests, try again later</>
@@ -99,6 +101,30 @@ export const Auth = () => {
                     <>{loginMutation.error?.response?.data?.message}</>
                   )}
                 </span>
+
+                {loginMutation.error?.response?.status === 401 && (
+                  <button
+                    className="btn btn-outline-danger btn-sm"
+                    type="button"
+                    onClick={() =>
+                      resendVerificationEmailMutation.mutate(
+                        {
+                          email: getValues("email"),
+                        },
+                        {
+                          onSuccess: () => {
+                            toast.success("Verification email resent");
+                          },
+                          onError: () => {
+                            toast.error("Verification email resend failed");
+                          },
+                        },
+                      )
+                    }
+                  >
+                    Resend verification email
+                  </button>
+                )}
               </div>
             )}
             {authMode === AUTH_MODES.SIGNUP && signupMutation.error && (
