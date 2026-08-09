@@ -1,6 +1,8 @@
 import { Auth } from "./pages/auth pages/Auth";
 import { Home } from "./pages/Home";
 import { VerifyEmail } from "./pages/auth pages/VerifyEmail";
+import { ForgotPassword } from "./pages/auth pages/ForgotPassword";
+import { ResetPassword } from "./pages/auth pages/ResetPassword";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -13,6 +15,14 @@ function App() {
         <Route
           path="/verify-email/:token"
           element={<VerifyEmail></VerifyEmail>}
+        ></Route>
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword></ForgotPassword>}
+        ></Route>
+        <Route
+          path="/reset-password/:token"
+          element={<ResetPassword></ResetPassword>}
         ></Route>
       </Routes>
     </div>
