@@ -44,3 +44,5 @@ test("check if 2 password fields and a submit button are rendered", () => {
 
   expect(screen.getByRole("button", { name: "Submit" })).toBeInTheDocument();
 });
+
+test();
