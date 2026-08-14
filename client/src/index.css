@@ -79,6 +79,13 @@
   text-decoration: none;
   color: var(--color-dark-70);
 }
+
+.hero-section {
+  height: 80vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 @media (min-width: 768px) {
   .auth-page > section {
     flex: 1;
