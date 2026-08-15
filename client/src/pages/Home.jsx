@@ -21,7 +21,7 @@ export const Home = () => {
     }
     const timer = setInterval(() => {
       setCurrentIndex((current) => (current + 1) % categories.length);
-    }, 100000);
+    }, 60000);
     return () => clearInterval(timer);
   }, [categories.length]);
 
