@@ -11,6 +11,8 @@ const app = express();
 app.set("trust proxy", 1);
 
 const { authRouter } = require("./routes/auth.route");
+const { categoriesRouter } = require("./routes/categories.route");
+const { productsRouter } = require("./routes/products.route");
 
 const { errorHandler } = require("./middleware/errorHandler");
 const { notFound } = require("./middleware/notFound");
@@ -41,6 +43,8 @@ app.use(helmet());
 
 //route
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/categories", categoriesRouter);
+app.use("/api/v1/products", productsRouter);
 
 //error handling
 app.all("*any", notFound);

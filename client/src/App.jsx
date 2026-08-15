@@ -3,6 +3,8 @@ import { Home } from "./pages/Home";
 import { VerifyEmail } from "./pages/auth pages/VerifyEmail";
 import { ForgotPassword } from "./pages/auth pages/ForgotPassword";
 import { ResetPassword } from "./pages/auth pages/ResetPassword";
+import { Products } from "./pages/Products";
+import { NotFound } from "./pages/NotFound";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -23,6 +25,11 @@ function App() {
         <Route
           path="/reset-password/:token"
           element={<ResetPassword></ResetPassword>}
+        ></Route>
+        <Route path="*" element={<NotFound></NotFound>}></Route>
+        <Route
+          path="/products/:categoryId"
+          element={<Products></Products>}
         ></Route>
       </Routes>
     </div>
