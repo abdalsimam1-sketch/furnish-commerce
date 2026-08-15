@@ -89,6 +89,12 @@
 .carousel-btn.btn {
   border-radius: 50%;
 }
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+}
 
 @media (min-width: 768px) {
   .auth-page > section {
