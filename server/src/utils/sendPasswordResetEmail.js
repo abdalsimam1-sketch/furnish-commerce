@@ -1,25 +1,18 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  family: 4,
-  auth: {
-    pass: process.env.APP_PASSWORD,
-    user: process.env.USER_EMAIL,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendPasswordResetEmail = async (sendTo, token) => {
-  const resetPasswordLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
-  const email = await transporter.sendMail({
-    from: process.env.USER_EMAIL,
+  const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
+  const { error, data } = await resend.emails.send({
+    from: "Furnish Commerce <noreply@mail.abdals.site>",
     to: sendTo,
-    subject: "Reset Password",
+    subject: "Password Reset",
     html: `<div style="font-family: sans-serif; padding: 20px; color: #333;">
         <h1>Welcome to Furnish Commerce!</h1>
         <p>Please click the button below to complete your password reset:</p>
         <div style="margin: 24px 0;">
-          <a href="${resetPasswordLink}" style="background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+          <a href="${resetLink}" style="background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">
             Reset my password
           </a>
         </div>
@@ -27,6 +20,10 @@ const sendPasswordResetEmail = async (sendTo, token) => {
       </div>
     `,
   });
+  if (error) {
+    console.log(`Reset password email error : ${error}`);
+  }
+  return data;
 };
 
 module.exports = {
