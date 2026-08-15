@@ -5,12 +5,17 @@ import { ForgotPassword } from "./pages/auth pages/ForgotPassword";
 import { ResetPassword } from "./pages/auth pages/ResetPassword";
 import { Products } from "./pages/Products";
 import { NotFound } from "./pages/NotFound";
+import { Categories } from "./pages/Categories";
+import { Shop } from "./pages/Shop";
+import { Navbar } from "./components/Navbar";
+import { Footer } from "./components/Footer";
 
 import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <div>
+      <Navbar></Navbar>
       <Routes>
         <Route path="/" element={<Home></Home>}></Route>
         <Route path="/auth" element={<Auth></Auth>}></Route>
@@ -26,12 +31,16 @@ function App() {
           path="/reset-password/:token"
           element={<ResetPassword></ResetPassword>}
         ></Route>
-        <Route path="*" element={<NotFound></NotFound>}></Route>
+
         <Route
           path="/products/:categoryId"
           element={<Products></Products>}
         ></Route>
-      </Routes>
+        <Route path="/shop" element={<Shop></Shop>}></Route>
+        <Route path="/categories" element={<Categories></Categories>}></Route>
+        <Route path="*" element={<NotFound></NotFound>}></Route>
+      </Routes>{" "}
+      <Footer></Footer>
     </div>
   );
 }
