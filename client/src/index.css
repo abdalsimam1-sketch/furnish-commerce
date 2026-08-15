@@ -96,9 +96,38 @@
   width: 100%;
 }
 
+.sale-image {
+  background-image: url(/furniture.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 300px;
+}
+
+.contact-us-section {
+  background-image: url(/contactUs.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 300px;
+  width: 100%;
+}
+.contact-us-email-form {
+  max-width: 400px;
+  width: 90%;
+}
+.input {
+  background-color: transparent;
+}
+
 @media (min-width: 768px) {
-  .auth-page > section {
+  .auth-page > section,
+  .sale-section > div {
     flex: 1;
+  }
+  .contact-us-email-form {
+    max-width: 500px;
+    width: 95%;
   }
   .auth-image {
     height: 100vh;

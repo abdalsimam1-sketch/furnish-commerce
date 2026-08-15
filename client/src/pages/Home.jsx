@@ -2,17 +2,26 @@ import { useEffect, useMemo } from "react";
 import { useCategories } from "../hooks/useCategories";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { HomeData } from "../components/HomeData";
+import { homeData } from "../data/homeData";
+import { Input } from "../components/Input";
+import { useForm } from "react-hook-form";
 
 export const Home = () => {
   const { categoriesQuery } = useCategories();
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
 
   const categories = useMemo(
     () => categoriesQuery.data?.data?.categories ?? [],
     [categoriesQuery.data],
   );
-
+  const onSubmit = (email) => {};
   const currentCategory = categories[currentIndex];
 
   useEffect(() => {
@@ -28,14 +37,12 @@ export const Home = () => {
   if (categoriesQuery.isLoading)
     return (
       <div className="min-vh-100 d-flex justify-content-center align-items-center">
-        <span className="alert alert-secondary">
-          <h3>Loading.....</h3>
-        </span>
+        <span className="spinner-border"></span>
       </div>
     );
   if (!currentCategory) return null;
   return (
-    <div className="d-flex flex-column gap-3">
+    <div className="d-flex flex-column gap-5">
       <section
         className="hero-section d-flex justify-content-between align-items-center px-2 px-md-5"
         style={{ backgroundImage: `url(${currentCategory.image})` }}
@@ -70,17 +77,70 @@ export const Home = () => {
           }
         ></i>
       </section>
-
-      <section className="container d-flex flex-column text-center text-lg-start d-lg-flex flex-lg-row align-items-lg-center justify-content-lg-around">
+      <section className="container d-flex flex-column text-center text-lg-start d-lg-flex flex-lg-row align-items-lg-center justify-content-lg-between">
         <div className="d-flex flex-column gap-3">
           <h1 className="text-nowrap">Simply Unique /</h1>
           <h1 className="text-nowrap">Simply Better.</h1>
         </div>
-        <div>
-          <span className="text-muted ">
-            Furnish is a furniture shop based in Abuja, Nigeria.Est since 2026
+        <div className="d-flex flex-md-column text-muted">
+          <span>Furnish is a furniture shop based in Abuja, Nigeria.</span>
+          <span>Est since 2026.</span>
+        </div>
+      </section>
+      <hr />
+      <section className="container">
+        <div className="row g-3">
+          {homeData.map((item) => (
+            <div className="col-12 col-md-6 col-lg-3" key={item.title}>
+              <HomeData data={item}></HomeData>
+            </div>
+          ))}
+        </div>
+      </section>
+      <hr />
+      <section className="sale-section d-flex flex-column flex-md-row card">
+        <div className="sale-image"></div>
+        <div className="d-flex flex-column justify-content-center align-items-center text-center py-5 py-md-0 px-3">
+          <span className="text-primary fw-bold text-uppercase">
+            sale up to 35% off
+          </span>
+          <h1>HUNDREDS of New lower prices!</h1>
+          <span>
+            It's more affordable than ever to gove every room in your home a
+            stylish makeover
+          </span>
+
+          <span
+            className="cursor-pointer border-bottom"
+            onClick={() => navigate("/shop")}
+          >
+            Shop now <i className="bi bi-arrow-right"></i>
           </span>
         </div>
+      </section>
+      <section
+        className="contact-us-section d-flex flex-column justify-content-center align-items-center gap-4"
+        id="contact"
+      >
+        <h2>Join Our Newsletter</h2>
+        <span>Sign up for deals, new products and promotions</span>
+
+        <form
+          className="contact-us-email-form "
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Input
+            placeholder="Email address"
+            error={errors.email?.message}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Enter a valid email address",
+              },
+            })}
+          ></Input>
+        </form>
       </section>
     </div>
   );
