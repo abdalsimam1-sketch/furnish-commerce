@@ -21,6 +21,14 @@ export const Navbar = () => {
       </div>
       <div className="d-none d-md-flex gap-3 fw-bold text-muted">
         <span
+          className={`cursor-pointer ${activeLink("/")}`}
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          Home
+        </span>
+        <span
           className={`cursor-pointer ${activeLink("/shop")}`}
           onClick={() => {
             navigate("/shop");
@@ -43,9 +51,21 @@ export const Navbar = () => {
         <i className="bi bi-person-circle btn"></i>
         <i className="bi bi-bag btn"></i>
       </div>
-      <i className="bi bi-list fs-2 btn d-md-none" onClick={toggleMenu}></i>
+      <i
+        className={`bi bi-${menuOpen ? "x" : "list"} fs-2 btn d-md-none`}
+        onClick={toggleMenu}
+      ></i>
       {menuOpen && (
         <div className="d-md-none mobile-menu z-1 d-flex flex-column text-center bg-light">
+          <span
+            className="cursor-pointer border-bottom border-top py-2"
+            onClick={() => {
+              toggleMenu();
+              navigate("/");
+            }}
+          >
+            Home
+          </span>
           <span
             className="cursor-pointer border-bottom border-top py-2"
             onClick={() => {
@@ -55,6 +75,7 @@ export const Navbar = () => {
           >
             Shop
           </span>
+
           <span
             className="cursor-pointer border-bottom py-2"
             onClick={() => {
