@@ -86,6 +86,10 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+.carousel-btn.btn {
+  border-radius: 50%;
+}
+
 @media (min-width: 768px) {
   .auth-page > section {
     flex: 1;
