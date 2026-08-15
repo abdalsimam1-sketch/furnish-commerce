@@ -82,10 +82,10 @@ export const Home = () => {
           <h1 className="text-nowrap">Simply Unique /</h1>
           <h1 className="text-nowrap">Simply Better.</h1>
         </div>
-        <div className="d-flex flex-md-column text-muted">
-          <span>Furnish is a furniture shop based in Abuja, Nigeria.</span>
-          <span>Est since 2026.</span>
-        </div>
+
+        <span>
+          Furnish is a furniture shop based in Abuja, Nigeria. Est since 2026.
+        </span>
       </section>
       <hr />
       <section className="container">
