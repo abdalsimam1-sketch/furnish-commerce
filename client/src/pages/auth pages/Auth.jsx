@@ -102,29 +102,31 @@ export const Auth = () => {
                   )}
                 </span>
 
-                {loginMutation.error?.response?.status === 401 && (
-                  <button
-                    className="btn btn-outline-danger btn-sm"
-                    type="button"
-                    onClick={() =>
-                      resendVerificationEmailMutation.mutate(
-                        {
-                          email: getValues("email"),
-                        },
-                        {
-                          onSuccess: () => {
-                            toast.success("Verification email resent");
+                {loginMutation.error?.response?.status === 401 &&
+                  loginMutation.error?.response?.data?.message !==
+                    "Invalid email or password" && (
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      type="button"
+                      onClick={() =>
+                        resendVerificationEmailMutation.mutate(
+                          {
+                            email: getValues("email"),
                           },
-                          onError: () => {
-                            toast.error("Verification email resend failed");
+                          {
+                            onSuccess: () => {
+                              toast.success("Verification email resent");
+                            },
+                            onError: () => {
+                              toast.error("Verification email resend failed");
+                            },
                           },
-                        },
-                      )
-                    }
-                  >
-                    Resend verification email
-                  </button>
-                )}
+                        )
+                      }
+                    >
+                      Resend verification email
+                    </button>
+                  )}
               </div>
             )}
             {authMode === AUTH_MODES.SIGNUP && signupMutation.error && (

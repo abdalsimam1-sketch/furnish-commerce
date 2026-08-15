@@ -1,20 +1,13 @@
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  family: 4,
-  auth: {
-    pass: process.env.APP_PASSWORD,
-    user: process.env.USER_EMAIL,
-  },
-});
+const { Resend } = require("resend");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendVerificationEmail = async (sendTo, token) => {
   const verificationLink = `${process.env.CLIENT_URL}/verify-email/${token}`;
-  const email = await transporter.sendMail({
-    from: process.env.USER_EMAIL,
+
+  const { error, data } = await resend.emails.send({
+    from: "Furnish Commerce <noreply@mail.abdals.site>",
     to: sendTo,
-    subject: "Verify account",
+    subject: "Email verification",
     html: `<div style="font-family: sans-serif; padding: 20px; color: #333;">
         <h1>Welcome to Furnish Commerce!</h1>
         <p>Thank you for creating an account. Please click the button below to complete your registration:</p>
@@ -27,6 +20,11 @@ const sendVerificationEmail = async (sendTo, token) => {
       </div>
     `,
   });
+
+  if (error) {
+    console.log(`Verification email error : ${error}`);
+  }
+  return data;
 };
 
 module.exports = {
