@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useCategories } from "../hooks/useCategories";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { HomeData } from "../components/HomeData";
 import { homeData } from "../data/homeData";
 import { Input } from "../components/Input";
@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 export const Home = () => {
   const { categoriesQuery } = useCategories();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { hash } = useLocation();
   const navigate = useNavigate();
   const {
     register,
@@ -33,6 +34,14 @@ export const Home = () => {
     }, 60000);
     return () => clearInterval(timer);
   }, [categories.length]);
+
+  useEffect(() => {
+    if (hash === "#contact") {
+      document
+        .getElementById("contact")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [hash]);
 
   if (categoriesQuery.isLoading)
     return (
@@ -83,7 +92,7 @@ export const Home = () => {
           <h1 className="text-nowrap">Simply Better.</h1>
         </div>
 
-        <span className="simply-text mx-auto mx-md-0">
+        <span className="simply-text mx-auto mx-lg-0">
           Furnish is a furniture shop based in Abuja, Nigeria. Est since 2026.
         </span>
       </section>
