@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Footer = () => {
+  const navigate = useNavigate();
   return (
     <div className="bg-dark text-light p-4 text-center text-md-start mt-3">
       <footer className="container">
@@ -9,9 +11,24 @@ export const Footer = () => {
             <h1>Furnish</h1>
           </div>
           <div className="d-flex flex-column flex-md-row gap-3">
-            <span className="cursor-pointer fw-bold">Home</span>
-            <span className="cursor-pointer fw-bold">Shop</span>
-            <span className="cursor-pointer fw-bold">Categories</span>
+            <span
+              className="cursor-pointer fw-bold"
+              onClick={() => navigate("/")}
+            >
+              Home
+            </span>
+            <span
+              className="cursor-pointer fw-bold"
+              onClick={() => navigate("/shop")}
+            >
+              Shop
+            </span>
+            <span
+              className="cursor-pointer fw-bold"
+              onClick={() => navigate("/categories")}
+            >
+              Categories
+            </span>
             <span className="cursor-pointer fw-bold">Contact Us</span>
           </div>
         </section>

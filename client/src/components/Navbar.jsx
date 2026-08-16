@@ -12,6 +12,15 @@ export const Navbar = () => {
   const activeLink = (link) => {
     return pathname === link ? "text-dark" : "";
   };
+  const navigateToContactUs = () => {
+    if (pathname === "/") {
+      document
+        .getElementById("contact")
+        ?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/#contact");
+    }
+  };
   return (
     <nav className="d-flex align-items-center justify-content-between px-2 border-bottom position-relative">
       <div>
@@ -44,7 +53,9 @@ export const Navbar = () => {
         >
           Categories
         </span>
-        <span className="cursor-pointer">Contact Us</span>
+        <span className="cursor-pointer" onClick={navigateToContactUs}>
+          Contact Us
+        </span>
       </div>
       <div className="d-flex gap-3 fs-4 align-items-center">
         <i className="bi bi-search btn"></i>
@@ -85,7 +96,12 @@ export const Navbar = () => {
           >
             Categories
           </span>
-          <span className="cursor-pointer border-bottom py-2">Contact Us</span>
+          <span
+            className="cursor-pointer border-bottom py-2"
+            onClick={navigateToContactUs}
+          >
+            Contact Us
+          </span>
         </div>
       )}
     </nav>
