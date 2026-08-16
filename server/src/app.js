@@ -13,6 +13,7 @@ app.set("trust proxy", 1);
 const { authRouter } = require("./routes/auth.route");
 const { categoriesRouter } = require("./routes/categories.route");
 const { productsRouter } = require("./routes/products.route");
+const { cartRouter } = require("./routes/cart.route");
 
 const { errorHandler } = require("./middleware/errorHandler");
 const { notFound } = require("./middleware/notFound");
@@ -45,6 +46,7 @@ app.use(helmet());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/products", productsRouter);
+app.use("/api/v1/cart", cartRouter);
 
 //error handling
 app.all("*any", notFound);
