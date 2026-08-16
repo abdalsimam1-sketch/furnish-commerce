@@ -173,10 +173,35 @@ const decreaseItemService = async (userId, productId) => {
   return await getCartService(userId);
 };
 
+const clearCartService = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      cart: {
+        include: {
+          cartItems: true,
+        },
+      },
+    },
+  });
+  if (!user.cart) {
+    throw new BadRequestError("Cart is empty already");
+  }
+  await prisma.cartItem.deleteMany({
+    where: {
+      cartId: user.cart?.id,
+    },
+  });
+  return await getCartService(userId);
+};
+
 module.exports = {
   getCartService,
   addToCartService,
   increaseItemService,
   removeItemService,
   decreaseItemService,
+  clearCartService,
 };
