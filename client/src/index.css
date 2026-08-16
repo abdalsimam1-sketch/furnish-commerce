@@ -112,7 +112,8 @@
   min-height: 300px;
   width: 100%;
 }
-.contact-us-email-form {
+.contact-us-email-form,
+.simply-text {
   max-width: 400px;
   width: 90%;
 }

@@ -83,7 +83,7 @@ export const Home = () => {
           <h1 className="text-nowrap">Simply Better.</h1>
         </div>
 
-        <span>
+        <span className="simply-text mx-auto mx-md-0">
           Furnish is a furniture shop based in Abuja, Nigeria. Est since 2026.
         </span>
       </section>
