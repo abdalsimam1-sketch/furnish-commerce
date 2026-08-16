@@ -14,7 +14,18 @@ const getCart = async (req, res) => {
 
 const checkout = async (req, res) => {};
 
-const addToCart = async (req, res) => {};
+const addToCart = async (req, res) => {
+  const userId = req.user.id;
+  const { productId } = req.params;
+  const cart = await cartServices.addToCartService(userId, productId);
+  res.status(200).json({
+    success: true,
+    message: "Item added successfully",
+    data: {
+      cart,
+    },
+  });
+};
 const increaseItem = async (req, res) => {};
 const decreaseItem = async (req, res) => {};
 const removeFromCart = async (req, res) => {};
