@@ -43,7 +43,18 @@ const increaseItem = async (req, res) => {
     },
   });
 };
-const decreaseItem = async (req, res) => {};
+const decreaseItem = async (req, res) => {
+  const userId = req.user.id;
+  const { productId } = req.params;
+  const cart = await cartServices.decreaseItemService(userId, productId);
+  res.status(200).json({
+    success: true,
+    message: "Item decrmeneted succesfully",
+    data: {
+      cart,
+    },
+  });
+};
 const removeFromCart = async (req, res) => {
   const userId = req.user.id;
   const { productId } = req.params;

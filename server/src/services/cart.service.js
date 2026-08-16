@@ -140,9 +140,43 @@ const removeItemService = async (userId, productId) => {
   return await getCartService(userId);
 };
 
+const decreaseItemService = async (userId, productId) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      cart: {
+        include: {
+          cartItems: true,
+        },
+      },
+    },
+  });
+  const cartItems = user.cart?.cartItems;
+  const existingItem = cartItems?.find((item) => item.productId === productId);
+  if (!existingItem) {
+    throw new BadRequestError("Item doesnt exist in the cart");
+  }
+  if (existingItem.quantity === 1) {
+    await removeItemService(userId, productId);
+  } else {
+    await prisma.cartItem.update({
+      where: {
+        id: existingItem.id,
+      },
+      data: {
+        quantity: existingItem.quantity - 1,
+      },
+    });
+  }
+  return await getCartService(userId);
+};
+
 module.exports = {
   getCartService,
   addToCartService,
   increaseItemService,
   removeItemService,
+  decreaseItemService,
 };
