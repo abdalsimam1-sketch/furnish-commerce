@@ -75,9 +75,47 @@ const addToCartService = async (userId, productId, quantity) => {
   return await getCartService(userId);
 };
 
-const increaseItemService = async () => {};
+const increaseItemService = async (userId, productId) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      cart: {
+        include: { cartItems: true },
+      },
+    },
+  });
+  const cartItems = user.cart?.cartItems;
+  const exsitingItem = cartItems?.find((item) => item.productId === productId);
+  if (!exsitingItem) {
+    throw new BadRequestError("Item doesnt exist in cart");
+  }
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+    select: {
+      inStock: true,
+    },
+  });
+  if (exsitingItem.quantity + 1 > product.inStock) {
+    throw new BadRequestError("Not enough stock available");
+  }
+  await prisma.cartItem.update({
+    where: {
+      id: exsitingItem.id,
+    },
+    data: {
+      quantity: exsitingItem.quantity + 1,
+    },
+  });
+
+  return await getCartService(userId);
+};
 
 module.exports = {
   getCartService,
   addToCartService,
+  increaseItemService,
 };

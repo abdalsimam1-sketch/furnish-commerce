@@ -1,5 +1,6 @@
 const cartServices = require("../services/cart.service");
 const { BadRequestError } = require("../errors/index");
+
 const getCart = async (req, res) => {
   const userId = req.user.id;
   const cart = await cartServices.getCartService(userId);
@@ -30,7 +31,18 @@ const addToCart = async (req, res) => {
     },
   });
 };
-const increaseItem = async (req, res) => {};
+const increaseItem = async (req, res) => {
+  const userId = req.user.id;
+  const { productId } = req.params;
+  const cart = await cartServices.increaseItemService(userId, productId);
+  res.status(200).json({
+    success: true,
+    message: "Item incrmeneted succesfully",
+    data: {
+      cart,
+    },
+  });
+};
 const decreaseItem = async (req, res) => {};
 const removeFromCart = async (req, res) => {};
 const clearCart = async (req, res) => {};
