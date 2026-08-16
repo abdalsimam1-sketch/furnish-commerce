@@ -17,7 +17,8 @@ const checkout = async (req, res) => {};
 const addToCart = async (req, res) => {
   const userId = req.user.id;
   const { productId } = req.params;
-  const cart = await cartServices.addToCartService(userId, productId);
+  const { quantity } = req.body;
+  const cart = await cartServices.addToCartService(userId, productId, quantity);
   res.status(200).json({
     success: true,
     message: "Item added successfully",

@@ -1,4 +1,5 @@
 const { prisma } = require("../config/prisma");
+const { BadRequestError } = require("../errors");
 
 const getCartService = async (userId) => {
   const user = await prisma.user.findUnique({
@@ -14,7 +15,18 @@ const getCartService = async (userId) => {
   return user.cart?.cartItems ?? [];
 };
 
-const addToCartService = async (userId, productId) => {
+const addToCartService = async (userId, productId, quantity) => {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+    select: {
+      inStock: true,
+    },
+  });
+  if (!product || product.inStock < quantity) {
+    throw new BadRequestError("Not enough stock available");
+  }
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -30,34 +42,41 @@ const addToCartService = async (userId, productId) => {
   let cart = user.cart;
   if (!cart) {
     cart = await prisma.cart.create({
-      data: { customerId: userId },
+      data: {
+        customerId: userId,
+      },
       include: { cartItems: true },
     });
   }
-  const existingItem = cart.cartItems.find(
+  const existingCartItem = cart.cartItems.find(
     (item) => item.productId === productId,
   );
-  if (existingItem) {
+  if (existingCartItem) {
+    if (existingCartItem.quantity + quantity > product.inStock) {
+      throw new BadRequestError("Not enough stock available");
+    }
     await prisma.cartItem.update({
       where: {
-        id: existingItem.id,
+        id: existingCartItem.id,
       },
       data: {
-        quantity: existingItem.quantity + 1,
+        quantity: existingCartItem.quantity + quantity,
       },
     });
   } else {
     await prisma.cartItem.create({
       data: {
         productId,
+        quantity,
         cartId: cart.id,
-        quantity: 1,
       },
     });
   }
-
   return await getCartService(userId);
 };
+
+const increaseItemService = async () => {};
+
 module.exports = {
   getCartService,
   addToCartService,
