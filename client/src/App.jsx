@@ -12,6 +12,7 @@ import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { Cart } from "./components/Cart";
 import { Layout } from "./components/Layout";
+import { Checkout } from "./pages/Checkout";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -27,6 +28,7 @@ function App() {
           ></Route>
           <Route path="/shop" element={<Shop></Shop>}></Route>
           <Route path="/categories" element={<Categories></Categories>}></Route>
+          <Route path="/checkout" element={<Checkout></Checkout>}></Route>
         </Route>
 
         <Route path="/auth" element={<Auth></Auth>}></Route>
