@@ -7,7 +7,10 @@ const getCartService = async (userId) => {
     include: {
       cart: {
         include: {
-          cartItems: true,
+          cartItems: {
+            include: { product: true },
+            orderBy: { createdAt: "asc" },
+          },
         },
       },
     },
