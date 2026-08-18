@@ -120,6 +120,41 @@
 .input {
   background-color: transparent;
 }
+.cart {
+  width: min(400px, 90vw);
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  right: 0;
+  transform: translateX(100%);
+  transition: transform 0.5s ease;
+  z-index: 1000;
+}
+.cart.open {
+  transform: translateX(0);
+}
+.overlay {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  inset: 0;
+}
+.cart-img {
+  width: 10rem;
+  height: 10rem;
+}
+.cart-items {
+  overflow-y: auto;
+}
+.login-required.card {
+  max-width: 400px;
+  width: 95%;
+}
+.cart-spinner.spinner-border {
+  width: 20px;
+  height: 20px;
+  color: gray;
+}
 
 @media (min-width: 768px) {
   .auth-page > section,
@@ -139,6 +174,10 @@
   .auth-form {
     max-width: 500px;
     width: 90%;
+  }
+  .cart {
+    max-width: 550px;
+    width: 95%;
   }
 }
 

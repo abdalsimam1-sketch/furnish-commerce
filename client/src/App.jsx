@@ -10,16 +10,27 @@ import { Shop } from "./pages/Shop";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { Cart } from "./components/Cart";
+import { Layout } from "./components/Layout";
+import { Checkout } from "./pages/Checkout";
 
 import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <div>
-      <ScrollToTop></ScrollToTop>
-      <Navbar></Navbar>
       <Routes>
-        <Route path="/" element={<Home></Home>}></Route>
+        <Route element={<Layout></Layout>}>
+          <Route path="/" element={<Home></Home>}></Route>
+          <Route
+            path="/products/:categoryId"
+            element={<Products></Products>}
+          ></Route>
+          <Route path="/shop" element={<Shop></Shop>}></Route>
+          <Route path="/categories" element={<Categories></Categories>}></Route>
+          <Route path="/checkout" element={<Checkout></Checkout>}></Route>
+        </Route>
+
         <Route path="/auth" element={<Auth></Auth>}></Route>
         <Route
           path="/verify-email/:token"
@@ -33,16 +44,8 @@ function App() {
           path="/reset-password/:token"
           element={<ResetPassword></ResetPassword>}
         ></Route>
-
-        <Route
-          path="/products/:categoryId"
-          element={<Products></Products>}
-        ></Route>
-        <Route path="/shop" element={<Shop></Shop>}></Route>
-        <Route path="/categories" element={<Categories></Categories>}></Route>
         <Route path="*" element={<NotFound></NotFound>}></Route>
       </Routes>{" "}
-      <Footer></Footer>
     </div>
   );
 }

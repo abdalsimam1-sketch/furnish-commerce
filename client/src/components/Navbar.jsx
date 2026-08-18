@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export const Navbar = () => {
+export const Navbar = ({ onCartClick }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const toggleMenu = () => {
@@ -60,7 +60,7 @@ export const Navbar = () => {
       <div className="d-flex gap-3 fs-4 align-items-center">
         <i className="bi bi-search btn"></i>
         <i className="bi bi-person-circle btn"></i>
-        <i className="bi bi-bag btn"></i>
+        <i className="bi bi-bag btn" onClick={onCartClick}></i>
       </div>
       <i
         className={`bi bi-${menuOpen ? "x" : "list"} fs-2 btn d-md-none`}
