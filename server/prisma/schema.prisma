@@ -93,6 +93,7 @@ model Order{
   orderItems OrderItem[]
   customerId String 
   customer User @relation(fields: [customerId],references: [id])
+  payment Payment? 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -111,6 +112,23 @@ model OrderItem{
   updatedAt DateTime @updatedAt
 }
 
+model Payment {
+   id String @id @default(uuid())
+   reference String
+   amount Decimal @db.Decimal(10,2)
+   orderId String  @unique
+   status PAYMENT_STATUS @default(pending)
+   order Order @relation(fields: [orderId],references: [id])
+   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+enum PAYMENT_STATUS{
+  fail 
+  success
+  pending
+}
 enum STATUS{
   pending
   cancelled 
