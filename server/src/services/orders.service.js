@@ -109,9 +109,18 @@ const getUsersOrderService = async (userId) => {
   const orders = user?.orders;
   return orders;
 };
+const getSpecificOrderService = async (orderId) => {
+  const order = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+  return order;
+};
 
 module.exports = {
   getOrdersService,
   createOrderService,
   getUsersOrderService,
+  getSpecificOrderService,
 };

@@ -1,3 +1,4 @@
+const { ForbiddenError } = require("../errors");
 const orderServices = require("../services/orders.service");
 
 const getOrders = async (req, res) => {
@@ -35,7 +36,26 @@ const getUserOrders = async (req, res) => {
   });
 };
 const cancelOrder = async (req, res) => {};
-const getSpecificOrder = async (req, res) => {};
+const getSpecificOrder = async (req, res) => {
+  const { orderId } = req.params;
+  const { id, role } = req.user;
+
+  const order = await orderServices.getSpecificOrderService(orderId);
+  if (role !== "admin") {
+    if (order.customerId !== id) {
+      throw new ForbiddenError(
+        "You are not allowed access to another user's data",
+      );
+    }
+  }
+  res.status(200).json({
+    success: true,
+    message: "Order found",
+    data: {
+      order,
+    },
+  });
+};
 
 module.exports = {
   getOrders,
