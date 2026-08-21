@@ -59,7 +59,18 @@ const webhook = async (req, res) => {
 };
 const getSpecificPayment = async (req, res) => {};
 const getPayments = async (req, res) => {};
-const getUserPayments = async (req, res) => {};
+
+const getUserPayments = async (req, res) => {
+  const userId = req.user.id;
+  const payments = await paymentServices.getUserPayments(userId);
+  res.status(200).json({
+    success: true,
+    message: "Payments found",
+    data: {
+      payments,
+    },
+  });
+};
 module.exports = {
   initializePayment,
   webhook,

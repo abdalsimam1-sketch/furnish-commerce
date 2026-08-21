@@ -29,6 +29,24 @@ const initializePaymentService = async (userId) => {
   return { email, amount };
 };
 
+const getUserPayments = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      orders: {
+        include: {
+          payment: true,
+        },
+      },
+    },
+  });
+  const payments = user?.orders?.map((item) => item.payment);
+  return payments;
+};
+
 module.exports = {
   initializePaymentService,
+  getUserPayments,
 };
