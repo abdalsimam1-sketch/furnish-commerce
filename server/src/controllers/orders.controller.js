@@ -21,8 +21,20 @@ const getOrders = async (req, res) => {
     },
   });
 };
-const createOrder = async (req, res) => {};
-const updateOrderStatus = async (req, res) => {};
+
+const updateOrderStatus = async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  const order = await orderServices.updateOrderStatusService(orderId, status);
+  res.status(200).json({
+    success: true,
+    message: "Order status updated",
+    data: {
+      order,
+    },
+  });
+};
 const getUserOrders = async (req, res) => {
   const userId = req.user.id;
 

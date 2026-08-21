@@ -117,10 +117,20 @@ const getSpecificOrderService = async (orderId) => {
   });
   return order;
 };
+const updateOrderStatusService = async (orderId, status) => {
+  const order = await prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: { status },
+  });
+  return order;
+};
 
 module.exports = {
   getOrdersService,
   createOrderService,
   getUsersOrderService,
   getSpecificOrderService,
+  updateOrderStatusService,
 };
