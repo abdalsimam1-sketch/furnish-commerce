@@ -72,7 +72,16 @@ const getSpecificPayment = async (req, res) => {
     data: { payment },
   });
 };
-const getPayments = async (req, res) => {};
+const getPayments = async (req, res) => {
+  const { page = 1, limit = 10, search } = req.query;
+  const { count, totalPages, payments } =
+    await paymentServices.getPaymentsService(page, limit, search);
+  res.status(200).json({
+    success: true,
+    message: "Payments found",
+    data: { count, totalPages, payments, page, limit },
+  });
+};
 
 const getUserPayments = async (req, res) => {
   const userId = req.user.id;
