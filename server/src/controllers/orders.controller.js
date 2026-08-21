@@ -22,7 +22,18 @@ const getOrders = async (req, res) => {
 };
 const createOrder = async (req, res) => {};
 const updateOrderStatus = async (req, res) => {};
-const getUserOrders = async (req, res) => {};
+const getUserOrders = async (req, res) => {
+  const userId = req.user.id;
+
+  const orders = await orderServices.getUsersOrderService(userId);
+  res.status(200).json({
+    success: true,
+    message: "Orders found",
+    data: {
+      orders,
+    },
+  });
+};
 const cancelOrder = async (req, res) => {};
 const getSpecificOrder = async (req, res) => {};
 

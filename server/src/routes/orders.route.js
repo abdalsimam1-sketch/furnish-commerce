@@ -9,9 +9,6 @@ ordersRouter.use(authentication);
 //get all orders //admin
 ordersRouter.get("", authorization("admin"), ordersController.getOrders);
 
-//create order
-ordersRouter.post("/create-order", ordersController.createOrder);
-
 //get user's order by userId
 ordersRouter.get("/user-orders", ordersController.getUserOrders);
 
