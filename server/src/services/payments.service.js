@@ -46,7 +46,20 @@ const getUserPayments = async (userId) => {
   return payments;
 };
 
+const getSpecificPaymentService = async (paymentId) => {
+  const payment = await prisma.payment.findUnique({
+    where: {
+      id: paymentId,
+    },
+    include: {
+      order: true,
+    },
+  });
+  return payment;
+};
+
 module.exports = {
   initializePaymentService,
   getUserPayments,
+  getSpecificPaymentService,
 };

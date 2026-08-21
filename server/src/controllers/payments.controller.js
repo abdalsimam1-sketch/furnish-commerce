@@ -1,7 +1,7 @@
 const paymentServices = require("../services/payments.service");
 const axios = require("axios");
 const { checkoutSchema } = require("../validations/payment.validation");
-const { BadRequestError } = require("../errors");
+const { BadRequestError, ForbiddenError } = require("../errors");
 const { createOrderService } = require("../services/orders.service");
 const crypto = require("crypto");
 
@@ -57,7 +57,21 @@ const webhook = async (req, res) => {
     data: {},
   });
 };
-const getSpecificPayment = async (req, res) => {};
+const getSpecificPayment = async (req, res) => {
+  const { paymentId } = req.params;
+  const { id, role } = req.user;
+  const payment = await paymentServices.getSpecificPaymentService(paymentId);
+  if (role !== "admin") {
+    if (payment.order.customerId !== id) {
+      throw new ForbiddenError();
+    }
+  }
+  res.status(200).json({
+    success: true,
+    message: "Payment found",
+    data: { payment },
+  });
+};
 const getPayments = async (req, res) => {};
 
 const getUserPayments = async (req, res) => {
