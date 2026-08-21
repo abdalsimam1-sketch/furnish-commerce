@@ -3,11 +3,12 @@ const paymentsRouter = require("express").Router();
 const paymentsController = require("../controllers/payments.controller");
 
 const { authentication } = require("../middleware/authentication");
+const { authorization } = require("../middleware/authorization");
 
 paymentsRouter.use(authentication);
 
 //get all payments
-paymentsRouter.get("/", paymentsController.getPayments);
+paymentsRouter.get("/", authorization("admin"), paymentsController.getPayments);
 //get a user's payments
 paymentsRouter.get("/user-payments", paymentsController.getUserPayments);
 //initialize payment

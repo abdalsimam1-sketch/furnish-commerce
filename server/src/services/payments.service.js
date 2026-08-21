@@ -58,8 +58,38 @@ const getSpecificPaymentService = async (paymentId) => {
   return payment;
 };
 
+const getPaymentsService = async (page, limit, search) => {
+  const skip = Number(page - 1) * Number(limit);
+  const take = Number(limit);
+  const where = {};
+  if (search) {
+    where.order = {
+      OR: [
+        { firstName: { contains: search, mode: "insensitive" } },
+        {
+          lastName: { contains: search, mode: "insensitive" },
+        },
+        {
+          email: { contains: search, mode: "insensitive" },
+        },
+      ],
+    };
+  }
+  const payments = await prisma.payment.findMany({
+    include: { order: true },
+    where,
+    skip,
+    take,
+  });
+  const count = await prisma.payment.count({ where });
+  const totalPages = Math.ceil(count / take);
+
+  return { payments, count, totalPages };
+};
+
 module.exports = {
   initializePaymentService,
   getUserPayments,
   getSpecificPaymentService,
+  getPaymentsService,
 };
