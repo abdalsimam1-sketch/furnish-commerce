@@ -1,4 +1,5 @@
 const { prisma } = require("../config/prisma");
+const { ForbiddenError, NotFoundError } = require("../errors");
 
 const getOrdersService = async (page, limit, search, status) => {
   const skip = (Number(page) - 1) * Number(limit);
@@ -115,6 +116,9 @@ const getSpecificOrderService = async (orderId) => {
       id: orderId,
     },
   });
+  if (!order) {
+    throw new NotFoundError("Order not found");
+  }
   return order;
 };
 const updateOrderStatusService = async (orderId, status) => {
@@ -127,10 +131,35 @@ const updateOrderStatusService = async (orderId, status) => {
   return order;
 };
 
+const cancelOrderService = async (orderId) => {
+  let order = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+  if (!order) {
+    throw new NotFoundError("Order not found");
+  }
+  if (order.status !== "pending") {
+    throw new ForbiddenError("Only pending orders can be cancelled");
+  }
+  order = await prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status: "cancelled",
+    },
+  });
+
+  return order;
+};
+
 module.exports = {
   getOrdersService,
   createOrderService,
   getUsersOrderService,
   getSpecificOrderService,
   updateOrderStatusService,
+  cancelOrderService,
 };

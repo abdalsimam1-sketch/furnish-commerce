@@ -47,7 +47,26 @@ const getUserOrders = async (req, res) => {
     },
   });
 };
-const cancelOrder = async (req, res) => {};
+const cancelOrder = async (req, res) => {
+  const { orderId } = req.params;
+  const { id, role } = req.user;
+  let order = await orderServices.getSpecificOrderService(orderId);
+  if (role !== "admin") {
+    if (order.customerId !== id) {
+      throw new ForbiddenError(
+        "You are not allowed access to another user's data",
+      );
+    }
+  }
+  order = await orderServices.cancelOrderService(orderId);
+  res.status(200).json({
+    success: true,
+    message: "Order cancelled",
+    data: {
+      order,
+    },
+  });
+};
 const getSpecificOrder = async (req, res) => {
   const { orderId } = req.params;
   const { id, role } = req.user;
@@ -71,7 +90,6 @@ const getSpecificOrder = async (req, res) => {
 
 module.exports = {
   getOrders,
-  createOrder,
   updateOrderStatus,
   getUserOrders,
   cancelOrder,
