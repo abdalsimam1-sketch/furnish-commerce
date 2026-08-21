@@ -35,21 +35,21 @@ const initializePayment = async (req, res) => {
   });
 };
 const webhook = async (req, res) => {
-  const userId = req.body.data.metadata.userId;
-  const checkoutData = req.body.data.metadata;
-
   const hash = crypto
     .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
-    .update(JSON.stringify(req.body))
+    .update(req.body)
     .digest("hex");
 
   const signature = req.headers["x-paystack-signature"];
   if (hash !== signature) {
     throw new BadRequestError();
   }
+  req.body = JSON.parse(req.body.toString());
   if (req.body.event !== "charge.success") {
     throw new BadRequestError();
   }
+  const userId = req.body.data.metadata.userId;
+  const checkoutData = req.body.data.metadata;
   await createOrderService(userId, checkoutData);
   res.status(200).json({
     success: true,

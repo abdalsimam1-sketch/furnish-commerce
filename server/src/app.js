@@ -20,6 +20,8 @@ const { paymentsRouter } = require("./routes/payments.route");
 const { errorHandler } = require("./middleware/errorHandler");
 const { notFound } = require("./middleware/notFound");
 
+app.use("/api/v1/payments/webhook", express.raw({ type: "application/json" }));
+
 //global middleware
 app.use(express.json());
 app.use(morgan("dev"));
