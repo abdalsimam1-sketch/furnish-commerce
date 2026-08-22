@@ -1,7 +1,7 @@
 const paymentServices = require("../services/payments.service");
 const axios = require("axios");
 const { checkoutSchema } = require("../validations/payment.validation");
-const { BadRequestError, ForbiddenError } = require("../errors");
+const { BadRequestError, ForbiddenError, ConflictError } = require("../errors");
 const { createOrderService } = require("../services/orders.service");
 const crypto = require("crypto");
 
@@ -11,7 +11,7 @@ const initializePayment = async (req, res) => {
   if (error) {
     throw new BadRequestError(error.details[0].message);
   }
-
+  const reference = crypto.randomUUID();
   const { email, amount } =
     await paymentServices.initializePaymentService(userId);
   const url = "https://api.paystack.co/transaction/initialize";
@@ -21,6 +21,7 @@ const initializePayment = async (req, res) => {
       email,
       amount: amount * 100,
       metadata: { ...value, userId },
+      reference,
     },
     {
       headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
@@ -35,13 +36,13 @@ const initializePayment = async (req, res) => {
   });
 };
 const webhook = async (req, res) => {
-  const hash = crypto
+  const hmac = crypto
     .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
     .update(req.body)
     .digest("hex");
 
   const signature = req.headers["x-paystack-signature"];
-  if (hash !== signature) {
+  if (hmac !== signature) {
     throw new BadRequestError();
   }
   req.body = JSON.parse(req.body.toString());
@@ -50,7 +51,20 @@ const webhook = async (req, res) => {
   }
   const userId = req.body.data.metadata.userId;
   const checkoutData = req.body.data.metadata;
-  await createOrderService(userId, checkoutData);
+  const reference = req.body.data.reference;
+
+  try {
+    await createOrderService(userId, checkoutData, reference);
+  } catch (error) {
+    if (error instanceof ConflictError) {
+      return res.status(200).json({
+        success: true,
+        message: "Already processed",
+        data: {},
+      });
+    }
+    throw error;
+  }
   res.status(200).json({
     success: true,
     message: "Order created successfully",

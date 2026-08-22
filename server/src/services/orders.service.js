@@ -1,5 +1,5 @@
 const { prisma } = require("../config/prisma");
-const { ForbiddenError, NotFoundError } = require("../errors");
+const { ForbiddenError, NotFoundError, ConflictError } = require("../errors");
 
 const getOrdersService = async (page, limit, search, status) => {
   const skip = (Number(page) - 1) * Number(limit);
@@ -32,7 +32,7 @@ const getOrdersService = async (page, limit, search, status) => {
   return { orders, count, totalPages };
 };
 
-const createOrderService = async (userId, checkoutData) => {
+const createOrderService = async (userId, checkoutData, reference) => {
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -50,6 +50,15 @@ const createOrderService = async (userId, checkoutData) => {
     (sum, item) => sum + Number(item?.product?.price) * item?.quantity,
     0,
   );
+  const existing = await prisma.payment.findUnique({
+    where: {
+      reference,
+    },
+  });
+  if (existing) {
+    throw new ConflictError("Duplicate payments are not allowed");
+  }
+
   const result = await prisma.$transaction(async (tx) => {
     const order = await tx.order.create({
       data: {
@@ -78,6 +87,15 @@ const createOrderService = async (userId, checkoutData) => {
         }),
       ),
     );
+
+    await tx.payment.create({
+      data: {
+        reference,
+        amount: order.total,
+        orderId: order.id,
+        status: "success",
+      },
+    });
     await Promise.all(
       cartItems.map((item) =>
         tx.product.update({

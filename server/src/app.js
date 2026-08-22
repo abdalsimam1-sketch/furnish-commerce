@@ -23,7 +23,10 @@ const { notFound } = require("./middleware/notFound");
 app.use("/api/v1/payments/webhook", express.raw({ type: "application/json" }));
 
 //global middleware
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/v1/payments/webhook") return next();
+  express.json()(req, res, next);
+});
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(passport.initialize());
