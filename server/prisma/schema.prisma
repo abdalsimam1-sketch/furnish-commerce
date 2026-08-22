@@ -114,7 +114,7 @@ model OrderItem{
 
 model Payment {
    id String @id @default(uuid())
-   reference String
+   reference String @unique
    amount Decimal @db.Decimal(10,2)
    orderId String  @unique
    status PAYMENT_STATUS @default(pending)
