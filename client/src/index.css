@@ -155,6 +155,10 @@
   height: 20px;
   color: gray;
 }
+.checkout-section {
+  max-width: 500px;
+  width: 95%;
+}
 
 @media (min-width: 768px) {
   .auth-page > section,
