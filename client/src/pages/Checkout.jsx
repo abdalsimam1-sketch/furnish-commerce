@@ -14,7 +14,7 @@ export const Checkout = () => {
   const onSubmit = (checkoutForm) => {
     console.log(checkoutForm);
     initializePaymentMutation.mutate(checkoutForm, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         window.location.href = data?.data?.authorization_url;
       },
     });
