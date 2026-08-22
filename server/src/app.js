@@ -14,12 +14,19 @@ const { authRouter } = require("./routes/auth.route");
 const { categoriesRouter } = require("./routes/categories.route");
 const { productsRouter } = require("./routes/products.route");
 const { cartRouter } = require("./routes/cart.route");
+const { ordersRouter } = require("./routes/orders.route");
+const { paymentsRouter } = require("./routes/payments.route");
 
 const { errorHandler } = require("./middleware/errorHandler");
 const { notFound } = require("./middleware/notFound");
 
+app.use("/api/v1/payments/webhook", express.raw({ type: "application/json" }));
+
 //global middleware
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/v1/payments/webhook") return next();
+  express.json()(req, res, next);
+});
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(passport.initialize());
@@ -47,6 +54,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/products", productsRouter);
 app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/orders", ordersRouter);
+app.use("/api/v1/payments", paymentsRouter);
 
 //error handling
 app.all("*any", notFound);

@@ -1,0 +1,27 @@
+import { api } from "../api/api";
+
+export const getOrders = async () => {
+  const response = await api.get("/orders");
+  return response.data;
+};
+
+export const getUsersOrders = async () => {
+  const response = await api.get("/orders/user-orders");
+  return response.data;
+};
+export const updateOrderStatus = async (orderId, newStatus) => {
+  const response = await api.patch(`/orders/update/${orderId}`, {
+    status: newStatus,
+  });
+  return response.data;
+};
+
+export const cancelOrder = async (orderId) => {
+  const response = await api.patch(`/orders/cancel/${orderId}`);
+  return response.data;
+};
+
+export const getSpecificOrder = async (orderId) => {
+  const response = await api.get(`/orders/${orderId}`);
+  return response.data;
+};

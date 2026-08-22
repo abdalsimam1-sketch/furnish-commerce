@@ -13,6 +13,7 @@ import { ScrollToTop } from "./components/ScrollToTop";
 import { Cart } from "./components/Cart";
 import { Layout } from "./components/Layout";
 import { Checkout } from "./pages/Checkout";
+import { OrderSuccess } from "./pages/OrderSuccess";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -29,6 +30,10 @@ function App() {
           <Route path="/shop" element={<Shop></Shop>}></Route>
           <Route path="/categories" element={<Categories></Categories>}></Route>
           <Route path="/checkout" element={<Checkout></Checkout>}></Route>
+          <Route
+            path="/order-success"
+            element={<OrderSuccess></OrderSuccess>}
+          ></Route>
         </Route>
 
         <Route path="/auth" element={<Auth></Auth>}></Route>
