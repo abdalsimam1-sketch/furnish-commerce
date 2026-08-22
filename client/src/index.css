@@ -183,6 +183,10 @@
     max-width: 550px;
     width: 95%;
   }
+  .checkout-section {
+    max-width: 700px;
+    width: 90%;
+  }
 }
 
 @media (min-width: 1024px) {
