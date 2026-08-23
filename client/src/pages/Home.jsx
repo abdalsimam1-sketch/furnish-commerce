@@ -6,9 +6,15 @@ import { HomeData } from "../components/HomeData";
 import { homeData } from "../data/homeData";
 import { Input } from "../components/Input";
 import { useForm } from "react-hook-form";
+import { useProducts } from "../hooks/useProducts";
 
 export const Home = () => {
   const { categoriesQuery } = useCategories();
+  const { getNewArrivalsQuery } = useProducts();
+
+  const { data: response } = getNewArrivalsQuery;
+  const newArrivals = response?.data?.newArrivals;
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const { hash } = useLocation();
   const navigate = useNavigate();
@@ -95,6 +101,51 @@ export const Home = () => {
         <span className="simply-text mx-auto mx-lg-0">
           Furnish is a furniture shop based in Abuja, Nigeria. Est since 2026.
         </span>
+      </section>
+      <hr />
+      <section className="new-arrivals-section container d-flex flex-column gap-3">
+        <div className="d-flex justify-content-between align-items-center ">
+          <h4>New Arrivals</h4>
+          <span
+            className="border-bottom cursor-pointer"
+            onClick={() => navigate("/shop")}
+          >
+            More products <i className="bi bi-arrow-right"> </i>
+          </span>
+        </div>
+        <div className="d-flex gap-3 overflow-x-auto">
+          {newArrivals?.map((item) => (
+            <div
+              key={item?.id}
+              style={{ minWidth: "260px", maxWidth: "260px" }}
+            >
+              <div className="card">
+                <img
+                  loading="lazy"
+                  className="w-100 rounded-top"
+                  src={item?.image}
+                  alt={item?.name}
+                  style={{
+                    height: "16rem",
+                    objectFit: "cover",
+                  }}
+                />
+                <div className="d-flex flex-column p-3">
+                  <span className="text-muted fw-bold text-uppercase">
+                    {item?.category?.name}
+                  </span>
+                  <span>{item?.name}</span>
+                  <hr />
+                  <div className="d-flex align-items-center justify-content-between">
+                    <span className="fw-bold">
+                      ₦{Number(item?.price).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
       <hr />
       <section className="container">
