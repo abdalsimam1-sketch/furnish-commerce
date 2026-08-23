@@ -133,6 +133,13 @@ const getSpecificOrderService = async (orderId) => {
     where: {
       id: orderId,
     },
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
+    },
   });
   if (!order) {
     throw new NotFoundError("Order not found");

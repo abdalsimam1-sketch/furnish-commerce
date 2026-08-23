@@ -31,7 +31,7 @@ function App() {
           <Route path="/categories" element={<Categories></Categories>}></Route>
           <Route path="/checkout" element={<Checkout></Checkout>}></Route>
           <Route
-            path="/order-success"
+            path="/order-success/:orderId"
             element={<OrderSuccess></OrderSuccess>}
           ></Route>
         </Route>

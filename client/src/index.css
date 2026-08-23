@@ -155,7 +155,8 @@
   height: 20px;
   color: gray;
 }
-.checkout-section {
+.checkout-section,
+.order-success-section.container {
   max-width: 500px;
   width: 95%;
 }
