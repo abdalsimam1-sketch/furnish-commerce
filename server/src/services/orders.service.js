@@ -122,7 +122,15 @@ const getUsersOrderService = async (userId) => {
       id: userId,
     },
     include: {
-      orders: true,
+      orders: {
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      },
     },
   });
   const orders = user?.orders;
