@@ -5,12 +5,8 @@ import { ForgotPassword } from "./pages/auth pages/ForgotPassword";
 import { ResetPassword } from "./pages/auth pages/ResetPassword";
 import { Products } from "./pages/Products";
 import { NotFound } from "./pages/NotFound";
-import { Categories } from "./pages/Categories";
+import { Orders } from "./pages/Orders";
 import { Shop } from "./pages/Shop";
-import { Navbar } from "./components/Navbar";
-import { Footer } from "./components/Footer";
-import { ScrollToTop } from "./components/ScrollToTop";
-import { Cart } from "./components/Cart";
 import { Layout } from "./components/Layout";
 import { Checkout } from "./pages/Checkout";
 import { OrderSuccess } from "./pages/OrderSuccess";
@@ -28,7 +24,7 @@ function App() {
             element={<Products></Products>}
           ></Route>
           <Route path="/shop" element={<Shop></Shop>}></Route>
-          <Route path="/categories" element={<Categories></Categories>}></Route>
+          <Route path="/orders" element={<Orders></Orders>}></Route>
           <Route path="/checkout" element={<Checkout></Checkout>}></Route>
           <Route
             path="/order-success/:orderId"
