@@ -1,17 +1,20 @@
 import { useOrders } from "../hooks/useOrders";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export const OrderSuccess = () => {
+  const [searchParams] = useSearchParams();
+  const reference = searchParams.get("reference");
   const navigate = useNavigate();
-  const { orderId } = useParams();
-  const { getSpecificOrderQuery } = useOrders();
+
+  const { getOrderByReferenceQuery } = useOrders();
   const {
     data: response,
     isLoading,
     isError,
     error,
-  } = getSpecificOrderQuery(orderId);
+  } = getOrderByReferenceQuery(reference);
   const order = response?.data?.order;
   console.log(order);
 
@@ -41,7 +44,7 @@ export const OrderSuccess = () => {
       <hr />
       <span className="alert alert-success d-flex justify-content-between w-100">
         <span>Order Id</span>
-        <span>#{orderId.slice(0, 8)}</span>
+        <span>#{order?.id?.slice(0, 8)}</span>
       </span>
       <hr />
       {order?.orderItems.map((item) => (
