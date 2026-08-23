@@ -32,7 +32,16 @@ const getProducts = async (req, res) => {
     },
   });
 };
-const getNewArrivals = async (req, res) => {};
+const getNewArrivals = async (req, res) => {
+  const newArrivals = await productsService.getNewArrivalsService();
+  res.status(200).json({
+    success: true,
+    message: "Products found",
+    data: {
+      newArrivals,
+    },
+  });
+};
 
 module.exports = {
   getCategoryProducts,

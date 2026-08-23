@@ -15,6 +15,7 @@ const categoryProductsService = async (categoryId) => {
   });
   return products;
 };
+
 const getProductsService = async (page, limit, search, categoryId) => {
   const skip = (Number(page) - 1) * Number(limit);
   const take = Number(limit);
@@ -32,7 +33,16 @@ const getProductsService = async (page, limit, search, categoryId) => {
   return { products, count, totalPages };
 };
 
+const getNewArrivalsService = async () => {
+  const newArrivals = await prisma.product.findMany({
+    take: 5,
+    orderBy: { createdAt: "desc" },
+  });
+  return newArrivals;
+};
+
 module.exports = {
   categoryProductsService,
   getProductsService,
+  getNewArrivalsService,
 };
