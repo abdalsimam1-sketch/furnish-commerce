@@ -166,8 +166,19 @@ dialog {
   max-width: 500px;
   width: 95%;
 }
+.product-search,
+.product-dropdown {
+  width: 100;
+}
 
 @media (min-width: 768px) {
+  .product-dropdown {
+    max-width: 12rem;
+  }
+  .product-search {
+    max-width: 400px;
+    width: 100%;
+  }
   .auth-page > section,
   .sale-section > div {
     flex: 1;
