@@ -5,6 +5,8 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+let refreshPromise = null;
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -24,10 +26,15 @@ api.interceptors.response.use(
     }
     originalRequest._retry = true;
 
+    if (!refreshPromise) {
+      refreshPromise = rotateTokens();
+    }
     try {
-      await rotateTokens();
+      await refreshPromise;
+      refreshPromise = null;
       return api(originalRequest);
     } catch (rotateError) {
+      refreshPromise = null;
       return Promise.reject(rotateError);
     }
   },
