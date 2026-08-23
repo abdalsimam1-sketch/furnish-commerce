@@ -27,7 +27,18 @@ const getProductsService = async (page, limit, search, categoryId) => {
     where.categoryId = categoryId;
   }
 
-  const products = await prisma.product.findMany({ skip, take, where });
+  const products = await prisma.product.findMany({
+    skip,
+    take,
+    where,
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
   const count = await prisma.product.count({ where });
   const totalPages = Math.ceil(count / take);
   return { products, count, totalPages };
@@ -37,6 +48,13 @@ const getNewArrivalsService = async () => {
   const newArrivals = await prisma.product.findMany({
     take: 5,
     orderBy: { createdAt: "desc" },
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
   return newArrivals;
 };
