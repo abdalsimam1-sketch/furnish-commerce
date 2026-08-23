@@ -12,7 +12,7 @@ export const Checkout = () => {
     reset,
   } = useForm();
   const onSubmit = (checkoutForm) => {
-    console.log(checkoutForm);
+    reset();
     initializePaymentMutation.mutate(checkoutForm, {
       onSuccess: (data) => {
         window.location.href = data?.data?.authorization_url;
@@ -23,6 +23,14 @@ export const Checkout = () => {
     <div className="container text-uppercase d-flex flex-column justify-content-center align-items-center  pb-5">
       <h4 className="my-4">Checkout</h4>
       <div className="card p-3 checkout-section ">
+        {initializePaymentMutation.isError && (
+          <div className="alert alert-danger">
+            <span>
+              {initializePaymentMutation.error?.response?.data?.message ||
+                "Something went wrong, pleae try again"}
+            </span>
+          </div>
+        )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="d-flex flex-column gap-2">
             {" "}
@@ -245,7 +253,14 @@ export const Checkout = () => {
                 placeholder="ZIP CODE"
               />
             </div>
-            <button className="btn bg-dark w-100 text-light ">SUBMIT</button>
+            <button
+              className={`btn bg-dark w-100 text-light mt-2 ${initializePaymentMutation.isPending ? "bg-secondary" : ""}`}
+              disabled={initializePaymentMutation.isPending}
+            >
+              {initializePaymentMutation.isPending
+                ? "Redirecting...."
+                : "SUBMIT"}
+            </button>
           </div>
         </form>
       </div>
