@@ -87,6 +87,26 @@ const getSpecificOrder = async (req, res) => {
     },
   });
 };
+const getOrderByReference = async (req, res) => {
+  const { paymentReference } = req.params;
+  const order =
+    await orderServices.getOrderByReferenceService(paymentReference);
+  const { id, role } = req.user;
+  if (role !== "admin") {
+    if (order.customerId !== id) {
+      throw new ForbiddenError(
+        "You are not allowed access to another user's data",
+      );
+    }
+  }
+  res.status(200).json({
+    success: true,
+    message: "Order found",
+    data: {
+      order,
+    },
+  });
+};
 
 module.exports = {
   getOrders,
@@ -94,4 +114,5 @@ module.exports = {
   getUserOrders,
   cancelOrder,
   getSpecificOrder,
+  getOrderByReference,
 };

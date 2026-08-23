@@ -33,7 +33,10 @@ ordersRouter.patch(
   ordersController.cancelOrder,
 );
 
-//paystack endpoint
+ordersRouter.get(
+  "/get-order-by-payment-reference/:paymentReference",
+  ordersController.getOrderByReference,
+);
 
 module.exports = {
   ordersRouter,

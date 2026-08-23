@@ -188,6 +188,31 @@ const cancelOrderService = async (orderId) => {
   return order;
 };
 
+const getOrderByReferenceService = async (paymentReference) => {
+  const payment = await prisma.payment.findUnique({
+    where: {
+      reference: paymentReference,
+    },
+    include: {
+      order: {
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!payment) {
+    throw new NotFoundError("Payment details not found");
+  }
+  const order = payment?.order;
+
+  return order;
+};
+
 module.exports = {
   getOrdersService,
   createOrderService,
@@ -195,4 +220,5 @@ module.exports = {
   getSpecificOrderService,
   updateOrderStatusService,
   cancelOrderService,
+  getOrderByReferenceService,
 };
