@@ -10,6 +10,7 @@ import { Shop } from "./pages/Shop";
 import { Layout } from "./components/Layout";
 import { Checkout } from "./pages/Checkout";
 import { OrderSuccess } from "./pages/OrderSuccess";
+import { ProtectedRoutes } from "./components/ProtectedRoutes";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -24,11 +25,29 @@ function App() {
             element={<Products></Products>}
           ></Route>
           <Route path="/shop" element={<Shop></Shop>}></Route>
-          <Route path="/orders" element={<Orders></Orders>}></Route>
-          <Route path="/checkout" element={<Checkout></Checkout>}></Route>
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoutes>
+                <Orders></Orders>
+              </ProtectedRoutes>
+            }
+          ></Route>
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoutes>
+                <Checkout></Checkout>
+              </ProtectedRoutes>
+            }
+          ></Route>
           <Route
             path="/order-success"
-            element={<OrderSuccess></OrderSuccess>}
+            element={
+              <ProtectedRoutes>
+                <OrderSuccess></OrderSuccess>
+              </ProtectedRoutes>
+            }
           ></Route>
         </Route>
 
