@@ -141,7 +141,7 @@ export const Checkout = () => {
               />
             </div>
             <hr />
-            <h6>Shipping Address</h6>
+            <h6 className="border-bottom">Shipping Address</h6>
             <div className="d-flex flex-column">
               {" "}
               <div className="d-flex justify-content-between align-items-center">
