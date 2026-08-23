@@ -149,7 +149,7 @@ export const Cart = ({ isOpen, onClose }) => {
       <div className="total-section d-flex flex-column gap-5">
         <h5>Total : ₦{total?.toLocaleString() ?? 0.0} </h5>
         <button
-          className="btn bg-dark text-light w-100"
+          className="btn bg-dark text-light w-100 mb-5 mb-md-0"
           onClick={() => {
             navigate("/checkout");
             onClose();

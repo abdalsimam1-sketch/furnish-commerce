@@ -46,12 +46,12 @@ export const Navbar = ({ onCartClick }) => {
           Shop
         </span>
         <span
-          className={`cursor-pointer ${activeLink("/categories")}`}
+          className={`cursor-pointer ${activeLink("/orders")}`}
           onClick={() => {
-            navigate("/categories");
+            navigate("/orders");
           }}
         >
-          Categories
+          Orders
         </span>
         <span className="cursor-pointer" onClick={navigateToContactUs}>
           Contact Us
@@ -91,10 +91,10 @@ export const Navbar = ({ onCartClick }) => {
             className="cursor-pointer border-bottom py-2"
             onClick={() => {
               toggleMenu();
-              navigate("/categories");
+              navigate("/orders");
             }}
           >
-            Categories
+            Orders
           </span>
           <span
             className="cursor-pointer border-bottom py-2"

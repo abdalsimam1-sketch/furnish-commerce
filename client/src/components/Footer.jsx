@@ -25,9 +25,9 @@ export const Footer = () => {
             </span>
             <span
               className="cursor-pointer fw-bold"
-              onClick={() => navigate("/categories")}
+              onClick={() => navigate("/orders")}
             >
-              Categories
+              Orders
             </span>
             <span className="cursor-pointer fw-bold">Contact Us</span>
           </div>

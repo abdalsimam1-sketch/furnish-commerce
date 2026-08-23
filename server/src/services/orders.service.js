@@ -122,7 +122,15 @@ const getUsersOrderService = async (userId) => {
       id: userId,
     },
     include: {
-      orders: true,
+      orders: {
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      },
     },
   });
   const orders = user?.orders;
@@ -132,6 +140,13 @@ const getSpecificOrderService = async (orderId) => {
   const order = await prisma.order.findUnique({
     where: {
       id: orderId,
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
     },
   });
   if (!order) {
