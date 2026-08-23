@@ -25,3 +25,10 @@ export const getSpecificOrder = async (orderId) => {
   const response = await api.get(`/orders/${orderId}`);
   return response.data;
 };
+
+export const getOrderByReference = async (paymentReference) => {
+  const response = await api.get(
+    `/orders/get-order-by-payment-reference/${paymentReference}`,
+  );
+  return response.data;
+};

@@ -27,7 +27,7 @@ function App() {
           <Route path="/orders" element={<Orders></Orders>}></Route>
           <Route path="/checkout" element={<Checkout></Checkout>}></Route>
           <Route
-            path="/order-success/:orderId"
+            path="/order-success"
             element={<OrderSuccess></OrderSuccess>}
           ></Route>
         </Route>

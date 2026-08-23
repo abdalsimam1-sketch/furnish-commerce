@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as orderServices from "../services/order.service";
+import * as orderServices from "../services/orders.service";
 
 export const useOrders = () => {
   const queryClient = useQueryClient();
@@ -23,5 +23,19 @@ export const useOrders = () => {
       queryClient.invalidateQueries({ queryKey: ["user orders"] });
     },
   });
-  return { getSpecificOrderQuery, getUsersOrdersQuery, cancelOrderMutation };
+  const getOrderByReferenceQuery = (paymentReference) =>
+    useQuery({
+      queryKey: ["order by reference", paymentReference],
+      queryFn: () => orderServices.getOrderByReference(paymentReference),
+      staleTime: 5 * 1000 * 60,
+      refetchOnMount: true,
+      retry: false,
+      enabled: !!paymentReference,
+    });
+  return {
+    getSpecificOrderQuery,
+    getUsersOrdersQuery,
+    cancelOrderMutation,
+    getOrderByReferenceQuery,
+  };
 };
