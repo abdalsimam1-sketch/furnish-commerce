@@ -1,5 +1,5 @@
 const { prisma } = require("../config/prisma");
-const { BadRequestError } = require("../errors");
+const { BadRequestError, ConflictError } = require("../errors");
 const bcrypt = require("bcryptjs");
 const { hashPassword } = require("../utils/hashPassword");
 const { cloudinary } = require("../config/cloudinary");
@@ -11,6 +11,27 @@ const updateUserInfoService = async (userId, userForm) => {
   if (!user) {
     throw new BadRequestError("User does not exist");
   }
+  if (userForm.email !== user.email) {
+    const existingEmail = await prisma.user.findUnique({
+      where: {
+        email: userForm.email,
+      },
+    });
+    if (existingEmail) {
+      throw new ConflictError("Email taken, use another email");
+    }
+  }
+  if (userForm.phone && user.phone !== userForm.phone) {
+    const existingPhone = await prisma.user.findFirst({
+      where: {
+        phone: userForm.phone,
+      },
+    });
+    if (existingPhone) {
+      throw new ConflictError("Phone numebr taken, use a new phone number");
+    }
+  }
+
   user = await prisma.user.update({
     where: {
       id: userId,
