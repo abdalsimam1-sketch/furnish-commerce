@@ -240,17 +240,21 @@ const getMe = async (req, res) => {
       email: true,
       role: true,
       phone: true,
+      password: true,
+      image: true,
     },
   });
   if (!user) {
     throw new UnauthenticatedError();
   }
+  const hasPassword = Boolean(user.password);
+  const { password, ...safeUser } = user;
 
   res.status(200).json({
     success: true,
     message: "User found",
     data: {
-      user,
+      user: { ...safeUser, hasPassword },
     },
   });
 };

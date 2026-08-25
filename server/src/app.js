@@ -16,6 +16,7 @@ const { productsRouter } = require("./routes/products.route");
 const { cartRouter } = require("./routes/cart.route");
 const { ordersRouter } = require("./routes/orders.route");
 const { paymentsRouter } = require("./routes/payments.route");
+const { usersRouter } = require("./routes/users.route");
 
 const { errorHandler } = require("./middleware/errorHandler");
 const { notFound } = require("./middleware/notFound");
@@ -56,6 +57,7 @@ app.use("/api/v1/products", productsRouter);
 app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/orders", ordersRouter);
 app.use("/api/v1/payments", paymentsRouter);
+app.use("/api/v1/users", usersRouter);
 
 //error handling
 app.all("*any", notFound);

@@ -11,6 +11,7 @@ import { Layout } from "./components/Layout";
 import { Checkout } from "./pages/Checkout";
 import { OrderSuccess } from "./pages/OrderSuccess";
 import { ProtectedRoutes } from "./components/ProtectedRoutes";
+import { UserSettings } from "./pages/UserSettings";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -46,6 +47,14 @@ function App() {
             element={
               <ProtectedRoutes>
                 <OrderSuccess></OrderSuccess>
+              </ProtectedRoutes>
+            }
+          ></Route>
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoutes>
+                <UserSettings></UserSettings>
               </ProtectedRoutes>
             }
           ></Route>

@@ -48,6 +48,11 @@ dialog {
   position: absolute;
   font-weight: bold;
 }
+.user-settings-input-error {
+  color: var(--color-danger);
+  font-weight: bold;
+  font-size: 0.75rem;
+}
 .auth-btn.btn,
 .auth-btn.btn:hover {
   background-color: var(--color-dark-70);
@@ -170,6 +175,24 @@ dialog {
 .product-dropdown {
   width: 100;
 }
+.user-modal {
+  z-index: 1099;
+  background-color: white;
+  position: absolute;
+  right: 0;
+  font-size: 1rem;
+}
+.user-info-section,
+.password-section {
+  max-width: 400px;
+  width: 90%;
+}
+.user-image {
+  width: 13rem;
+  height: 13rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
 @media (min-width: 768px) {
   .product-dropdown {
@@ -203,6 +226,11 @@ dialog {
   }
   .checkout-section {
     max-width: 700px;
+    width: 90%;
+  }
+  .user-info-section,
+  .password-section {
+    max-width: 600px;
     width: 90%;
   }
 }

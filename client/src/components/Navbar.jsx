@@ -1,9 +1,18 @@
-import React from "react";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { UserModal } from "../components/UserModal";
+import { useAuth } from "../hooks/useAuth";
 
-export const Navbar = ({ onCartClick }) => {
+export const Navbar = ({ onCartClick, onLogoutClick }) => {
+  const { meQuery, logoutMutation } = useAuth();
+  const { data: response } = meQuery;
+  const user = response?.data?.user;
+
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userModalOpen, setUserModalOpen] = useState(false);
+  const toggleUserModal = () => {
+    setUserModalOpen((current) => !current);
+  };
   const navigate = useNavigate();
   const toggleMenu = () => {
     setMenuOpen((current) => !current);
@@ -19,6 +28,7 @@ export const Navbar = ({ onCartClick }) => {
         ?.scrollIntoView({ behavior: "smooth" });
     } else {
       navigate("/#contact");
+      setUserModalOpen(false);
     }
   };
   return (
@@ -33,6 +43,7 @@ export const Navbar = ({ onCartClick }) => {
           className={`cursor-pointer ${activeLink("/")}`}
           onClick={() => {
             navigate("/");
+            setUserModalOpen(false);
           }}
         >
           Home
@@ -41,6 +52,7 @@ export const Navbar = ({ onCartClick }) => {
           className={`cursor-pointer ${activeLink("/shop")}`}
           onClick={() => {
             navigate("/shop");
+            setUserModalOpen(false);
           }}
         >
           Shop
@@ -49,6 +61,7 @@ export const Navbar = ({ onCartClick }) => {
           className={`cursor-pointer ${activeLink("/orders")}`}
           onClick={() => {
             navigate("/orders");
+            setUserModalOpen(false);
           }}
         >
           Orders
@@ -58,9 +71,30 @@ export const Navbar = ({ onCartClick }) => {
         </span>
       </div>
       <div className="d-flex gap-3 fs-4 align-items-center">
-        <i className="bi bi-search btn"></i>
-        <i className="bi bi-person-circle btn"></i>
-        <i className="bi bi-bag btn" onClick={onCartClick}></i>
+        <div className="position-relative">
+          <i className="bi bi-person-circle btn" onClick={toggleUserModal}></i>
+          {userModalOpen && (
+            <UserModal
+              onClose={() => setUserModalOpen(false)}
+              user={user}
+              onLogoutClick={() => {
+                logoutMutation.mutate();
+                setUserModalOpen(false);
+              }}
+              onLoginClick={() => {
+                navigate("/auth");
+                setUserModalOpen(false);
+              }}
+            ></UserModal>
+          )}
+        </div>
+        <i
+          className="bi bi-bag btn"
+          onClick={() => {
+            onCartClick();
+            setUserModalOpen(false);
+          }}
+        ></i>
       </div>
       <i
         className={`bi bi-${menuOpen ? "x" : "list"} fs-2 btn d-md-none`}
@@ -73,6 +107,7 @@ export const Navbar = ({ onCartClick }) => {
             onClick={() => {
               toggleMenu();
               navigate("/");
+              setUserModalOpen(false);
             }}
           >
             Home
@@ -82,6 +117,7 @@ export const Navbar = ({ onCartClick }) => {
             onClick={() => {
               toggleMenu();
               navigate("/shop");
+              setUserModalOpen(false);
             }}
           >
             Shop
@@ -92,6 +128,7 @@ export const Navbar = ({ onCartClick }) => {
             onClick={() => {
               toggleMenu();
               navigate("/orders");
+              setUserModalOpen(false);
             }}
           >
             Orders
