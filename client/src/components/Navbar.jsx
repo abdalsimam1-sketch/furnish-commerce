@@ -75,6 +75,7 @@ export const Navbar = ({ onCartClick, onLogoutClick }) => {
           <i className="bi bi-person-circle btn" onClick={toggleUserModal}></i>
           {userModalOpen && (
             <UserModal
+              onClose={() => setUserModalOpen(false)}
               user={user}
               onLogoutClick={() => {
                 logoutMutation.mutate();
@@ -87,7 +88,13 @@ export const Navbar = ({ onCartClick, onLogoutClick }) => {
             ></UserModal>
           )}
         </div>
-        <i className="bi bi-bag btn" onClick={onCartClick}></i>
+        <i
+          className="bi bi-bag btn"
+          onClick={() => {
+            onCartClick();
+            setUserModalOpen(false);
+          }}
+        ></i>
       </div>
       <i
         className={`bi bi-${menuOpen ? "x" : "list"} fs-2 btn d-md-none`}
