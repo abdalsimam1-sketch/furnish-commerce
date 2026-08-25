@@ -241,6 +241,7 @@ const getMe = async (req, res) => {
       role: true,
       phone: true,
       password: true,
+      image: true,
     },
   });
   if (!user) {
