@@ -170,7 +170,13 @@ dialog {
 .product-dropdown {
   width: 100;
 }
-
+.user-modal {
+  z-index: 1099;
+  background-color: white;
+  position: absolute;
+  right: 0;
+  font-size: 1rem;
+}
 @media (min-width: 768px) {
   .product-dropdown {
     max-width: 12rem;
