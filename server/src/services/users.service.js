@@ -62,15 +62,21 @@ const resetPasswordService = async (userId, passwordForm) => {
   if (!user) {
     throw new BadRequestError("User does not exist");
   }
-  const comparePasswords = await bcrypt.compare(
-    passwordForm.oldPassword,
-    user.password,
-  );
-  const hash = await hashPassword(passwordForm.newPassword);
 
-  if (!comparePasswords) {
-    throw new BadRequestError("Wrong old password");
+  if (user.password) {
+    if (!passwordForm.oldPassword) {
+      throw new BadRequestError("Old password is required");
+    }
+    const comparePasswords = await bcrypt.compare(
+      passwordForm.oldPassword,
+      user.password,
+    );
+
+    if (!comparePasswords) {
+      throw new BadRequestError("Wrong old password");
+    }
   }
+  const hash = await hashPassword(passwordForm.newPassword);
 
   user = await prisma.user.update({
     where: {
