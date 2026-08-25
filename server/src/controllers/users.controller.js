@@ -20,6 +20,7 @@ const updateUserInfo = async (req, res) => {
     },
   });
 };
+
 const resetPassword = async (req, res) => {
   const userId = req.user.id;
   const { value, error } = resetPasswordSchema.validate(req.body);
@@ -35,7 +36,23 @@ const resetPassword = async (req, res) => {
     },
   });
 };
-const updateAvatar = async (req, res) => {};
+
+const updateAvatar = async (req, res) => {
+  const file = req.file;
+  if (!file) {
+    throw new BadRequestError("No image file provided");
+  }
+  const userId = req.user.id;
+
+  const user = await usersServices.updateAvatarService(userId, file);
+  res.status(200).json({
+    success: true,
+    message: "User image updated",
+    data: {
+      user,
+    },
+  });
+};
 
 module.exports = {
   updateAvatar,

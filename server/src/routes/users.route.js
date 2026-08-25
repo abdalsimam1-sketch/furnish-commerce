@@ -3,6 +3,8 @@ const userController = require("../controllers/users.controller");
 const { authentication } = require("../middleware/authentication");
 const rateLimit = require("express-rate-limit");
 
+const { fileUpload } = require("../middleware/fileUpload");
+
 usersRouter.use(authentication);
 usersRouter.use(
   rateLimit({
@@ -15,7 +17,11 @@ usersRouter.use(
 
 usersRouter.patch("/update-user-info", userController.updateUserInfo);
 usersRouter.patch("/reset-password", userController.resetPassword);
-usersRouter.post("/update-avatar", userController.updateAvatar);
+usersRouter.post(
+  "/update-avatar",
+  fileUpload.single("avatar"),
+  userController.updateAvatar,
+);
 
 module.exports = {
   usersRouter,

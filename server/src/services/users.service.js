@@ -2,6 +2,7 @@ const { prisma } = require("../config/prisma");
 const { BadRequestError } = require("../errors");
 const bcrypt = require("bcryptjs");
 const { hashPassword } = require("../utils/hashPassword");
+const { cloudinary } = require("../config/cloudinary");
 
 const updateUserInfoService = async (userId, userForm) => {
   let user = await prisma.user.findUnique({
@@ -68,7 +69,33 @@ const resetPasswordService = async (userId, passwordForm) => {
   return user;
 };
 
+const updateAvatarService = async (userId, file) => {
+  let user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    throw new BadRequestError("User does not exist");
+  }
+  const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+  const { secure_url } = await cloudinary.uploader.upload(base64);
+  user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      image: secure_url,
+    },
+    select: {
+      image: true,
+    },
+  });
+  return user;
+};
+
 module.exports = {
   updateUserInfoService,
   resetPasswordService,
+  updateAvatarService,
 };
