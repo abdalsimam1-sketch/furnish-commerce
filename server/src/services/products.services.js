@@ -59,8 +59,27 @@ const getNewArrivalsService = async () => {
   return newArrivals;
 };
 
+const addProductService = async (productForm) => {
+  const product = await prisma.product.create({
+    data: {
+      name: productForm.name,
+      inStock: productForm.inStock,
+      description: productForm.description,
+      image: productForm.image,
+      price: productForm.price,
+      categoryId: productForm.categoryId,
+    },
+  });
+  return product;
+};
+const editProductService = async () => {};
+const deleteProductService = async () => {};
+
 module.exports = {
   categoryProductsService,
   getProductsService,
   getNewArrivalsService,
+  addProductService,
+  editProductService,
+  deleteProductService,
 };

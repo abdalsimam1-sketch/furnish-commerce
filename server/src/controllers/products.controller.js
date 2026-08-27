@@ -1,5 +1,6 @@
 const { BadRequestError } = require("../errors");
 const productsService = require("../services/products.services");
+const { addProductSchema } = require("../validations/products.validation");
 
 const getCategoryProducts = async (req, res) => {
   const { categoryId } = req.params;
@@ -42,9 +43,27 @@ const getNewArrivals = async (req, res) => {
     },
   });
 };
-
+const addProduct = async (req, res) => {
+  const { error, value } = addProductSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.details[0].message);
+  }
+  const product = await productsService.addProductService(value);
+  res.status(201).json({
+    success: true,
+    message: "Product added successfully",
+    data: {
+      product,
+    },
+  });
+};
+const editProduct = async () => {};
+const deleteProduct = async () => {};
 module.exports = {
   getCategoryProducts,
   getProducts,
   getNewArrivals,
+  addProduct,
+  editProduct,
+  deleteProduct,
 };
