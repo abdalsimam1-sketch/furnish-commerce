@@ -1,4 +1,5 @@
 const { prisma } = require("../config/prisma");
+const { BadRequestError } = require("../errors");
 
 const categoryProductsService = async (categoryId) => {
   const products = await prisma.product.findMany({
@@ -72,7 +73,30 @@ const addProductService = async (productForm) => {
   });
   return product;
 };
-const editProductService = async () => {};
+const editProductService = async (productId, productForm) => {
+  let product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+  if (!product) {
+    throw new BadRequestError("Product does not exist");
+  }
+  product = await prisma.product.update({
+    where: {
+      id: productId,
+    },
+    data: {
+      name: productForm.name,
+      inStock: productForm.inStock,
+      description: productForm.description,
+      image: productForm.image,
+      price: productForm.price,
+      categoryId: productForm.categoryId,
+    },
+  });
+  return product;
+};
 const deleteProductService = async () => {};
 
 module.exports = {

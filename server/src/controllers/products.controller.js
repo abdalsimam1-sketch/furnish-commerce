@@ -57,7 +57,21 @@ const addProduct = async (req, res) => {
     },
   });
 };
-const editProduct = async () => {};
+const editProduct = async (req, res) => {
+  const productId = req.params.productId;
+  const { error, value } = addProductSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.details[0].message);
+  }
+  const product = await productsService.editProductService(productId, value);
+  res.status(201).json({
+    success: true,
+    message: "Product edited successfully",
+    data: {
+      product,
+    },
+  });
+};
 const deleteProduct = async () => {};
 module.exports = {
   getCategoryProducts,
