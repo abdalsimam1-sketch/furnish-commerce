@@ -72,7 +72,15 @@ const editProduct = async (req, res) => {
     },
   });
 };
-const deleteProduct = async () => {};
+const deleteProduct = async (req, res) => {
+  const productId = req.params.productId;
+  await productsService.deleteProductService(productId);
+  res.status(200).json({
+    success: true,
+    message: "Product deleted successfully",
+    data: {},
+  });
+};
 module.exports = {
   getCategoryProducts,
   getProducts,

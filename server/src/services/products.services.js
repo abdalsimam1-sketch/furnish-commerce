@@ -97,7 +97,21 @@ const editProductService = async (productId, productForm) => {
   });
   return product;
 };
-const deleteProductService = async () => {};
+const deleteProductService = async (productId) => {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+  if (!product) {
+    throw new BadRequestError("Product does not exist");
+  }
+  await prisma.product.delete({
+    where: {
+      id: productId,
+    },
+  });
+};
 
 module.exports = {
   categoryProductsService,
