@@ -15,7 +15,7 @@ import { UserSettings } from "./pages/UserSettings";
 import { AdminProducts } from "./pages/Admin/AdminProducts";
 import { AdminRoutes } from "./components/AdminRoutes";
 import { AdminDashboard } from "./pages/Admin/AdminDashboard";
-import { AdminOrders } from "./pages/admin/AdminOrders";
+import { AdminOrders } from "./pages/Admin/AdminOrders";
 
 import { Routes, Route } from "react-router-dom";
 
