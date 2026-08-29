@@ -1,5 +1,6 @@
 const { prisma } = require("../config/prisma");
 const { BadRequestError } = require("../errors");
+const { cloudinary } = require("../config/cloudinary");
 
 const categoryProductsService = async (categoryId) => {
   const products = await prisma.product.findMany({
@@ -60,20 +61,22 @@ const getNewArrivalsService = async () => {
   return newArrivals;
 };
 
-const addProductService = async (productForm) => {
+const addProductService = async (productForm, image) => {
+  const base64 = `data:${image.mimetype};base64,${image.buffer.toString("base64")}`;
+  const { secure_url } = await cloudinary.uploader.upload(base64);
   const product = await prisma.product.create({
     data: {
       name: productForm.name,
       inStock: productForm.inStock,
       description: productForm.description,
-      image: productForm.image,
+      image: secure_url,
       price: productForm.price,
       categoryId: productForm.categoryId,
     },
   });
   return product;
 };
-const editProductService = async (productId, productForm) => {
+const editProductService = async (productId, productForm, image) => {
   let product = await prisma.product.findUnique({
     where: {
       id: productId,
@@ -81,6 +84,12 @@ const editProductService = async (productId, productForm) => {
   });
   if (!product) {
     throw new BadRequestError("Product does not exist");
+  }
+  let imageUrl = product.image;
+  if (image) {
+    const base64 = `data:${image.mimetype};base64,${image.buffer.toString("base64")}`;
+    const { secure_url } = await cloudinary.uploader.upload(base64);
+    imageUrl = secure_url;
   }
   product = await prisma.product.update({
     where: {
@@ -90,7 +99,7 @@ const editProductService = async (productId, productForm) => {
       name: productForm.name,
       inStock: productForm.inStock,
       description: productForm.description,
-      image: productForm.image,
+      image: imageUrl,
       price: productForm.price,
       categoryId: productForm.categoryId,
     },

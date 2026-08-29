@@ -44,11 +44,15 @@ const getNewArrivals = async (req, res) => {
   });
 };
 const addProduct = async (req, res) => {
+  const image = req.file;
+  if (!image) {
+    throw new BadRequestError("Product image is required");
+  }
   const { error, value } = addProductSchema.validate(req.body);
   if (error) {
     throw new BadRequestError(error.details[0].message);
   }
-  const product = await productsService.addProductService(value);
+  const product = await productsService.addProductService(value, image);
   res.status(201).json({
     success: true,
     message: "Product added successfully",
@@ -59,11 +63,17 @@ const addProduct = async (req, res) => {
 };
 const editProduct = async (req, res) => {
   const productId = req.params.productId;
+  const image = req.file;
+
   const { error, value } = addProductSchema.validate(req.body);
   if (error) {
     throw new BadRequestError(error.details[0].message);
   }
-  const product = await productsService.editProductService(productId, value);
+  const product = await productsService.editProductService(
+    productId,
+    value,
+    image,
+  );
   res.status(201).json({
     success: true,
     message: "Product edited successfully",
