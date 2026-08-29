@@ -121,8 +121,44 @@ const updateAvatarService = async (userId, file) => {
   return user;
 };
 
+const getUsersService = async (page, limit, search) => {
+  const skip = (Number(page) - 1) * Number(limit);
+  const take = Number(limit);
+  const where = {};
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { email: { contains: search, mode: "insensitive" } },
+      { phone: { contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  const users = await prisma.user.findMany({
+    skip,
+    take,
+    where,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      isVerified: true,
+      createdAt: true,
+      image: true,
+    },
+  });
+
+  if (!users) {
+    throw new BadRequestError("No users currently");
+  }
+  const count = await prisma.user.count({ where });
+  const totalPages = Math.ceil(count / take);
+  return { users, count, totalPages };
+};
+
 module.exports = {
   updateUserInfoService,
   resetPasswordService,
   updateAvatarService,
+  getUsersService,
 };

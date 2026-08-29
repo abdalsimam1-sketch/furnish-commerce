@@ -1,6 +1,7 @@
 const usersRouter = require("express").Router();
 const userController = require("../controllers/users.controller");
 const { authentication } = require("../middleware/authentication");
+const { authorization } = require("../middleware/authorization");
 const rateLimit = require("express-rate-limit");
 
 const { fileUpload } = require("../middleware/fileUpload");
@@ -15,6 +16,7 @@ usersRouter.use(
   }),
 );
 
+usersRouter.get("/", authorization("admin"), userController.getUsers);
 usersRouter.patch("/update-user-info", userController.updateUserInfo);
 usersRouter.patch("/reset-password", userController.resetPassword);
 usersRouter.post(
