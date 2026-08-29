@@ -12,14 +12,15 @@ import { Checkout } from "./pages/Checkout";
 import { OrderSuccess } from "./pages/OrderSuccess";
 import { ProtectedRoutes } from "./components/ProtectedRoutes";
 import { UserSettings } from "./pages/UserSettings";
-import { AdminProducts } from "./pages/Admin/AdminProducts";
+import { AdminProducts } from "./pages/admin/AdminProducts";
 import { AdminRoutes } from "./components/AdminRoutes";
+import { AdminDashboard } from "./pages/admin/AdminDashboard";
 
 import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div>
+    <div style={{ fontFamily: "italics" }}>
       <Routes>
         <Route element={<Layout></Layout>}>
           <Route path="/" element={<Home></Home>}></Route>
@@ -66,6 +67,14 @@ function App() {
           element={
             <AdminRoutes>
               <AdminProducts></AdminProducts>
+            </AdminRoutes>
+          }
+        ></Route>
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminRoutes>
+              <AdminDashboard></AdminDashboard>
             </AdminRoutes>
           }
         ></Route>

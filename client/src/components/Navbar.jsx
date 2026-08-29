@@ -95,6 +95,18 @@ export const Navbar = ({ onCartClick, onLogoutClick }) => {
             setUserModalOpen(false);
           }}
         ></i>
+
+        {user?.role === "admin" && (
+          <i
+            className="btn btn-sm bg-dark text-light text-nowrap d-flex gap-1"
+            onClick={() => {
+              navigate("/admin/dashboard");
+            }}
+          >
+            <span> Admin </span>
+            <span className={`d-none d-md-flex`}>Dashboard</span>
+          </i>
+        )}
       </div>
       <i
         className={`bi bi-${menuOpen ? "x" : "list"} fs-2 btn d-md-none`}

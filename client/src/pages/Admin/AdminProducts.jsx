@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../hooks/useCategories";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const ADDEDIT_MODES = {
   ADD: "add",
@@ -11,6 +12,7 @@ const ADDEDIT_MODES = {
 };
 
 export const AdminProducts = () => {
+  const navigate = useNavigate();
   const {
     register,
     reset,
@@ -75,31 +77,39 @@ export const AdminProducts = () => {
   return (
     <div className="container d-flex flex-column gap-3 min-vh-100 mb-5">
       <h3 className="my-4 text-center ">Products</h3>
-      <button
-        className="align-self-end btn btn-sm bg-dark text-light"
-        onClick={() => {
-          setAddEditMode(ADDEDIT_MODES.ADD);
-          dialogRef.current.showModal();
-          setEditing(null);
-          reset({
-            name: "",
-            description: "",
-            price: "",
-            image: "",
-            inStock: "",
-            categoryId: "",
-          });
-        }}
-      >
-        Add Product
-      </button>
+      <div className="d-flex justify-content-between">
+        <i
+          className="bi bi-chevron-left btn"
+          onClick={() => {
+            navigate("/admin/dashboard");
+          }}
+        >
+          Back
+        </i>
+        <button
+          className="align-self-end btn btn-sm bg-dark text-light"
+          onClick={() => {
+            setAddEditMode(ADDEDIT_MODES.ADD);
+            dialogRef.current.showModal();
+            setEditing(null);
+            reset({
+              name: "",
+              description: "",
+              price: "",
+              image: "",
+              inStock: "",
+              categoryId: "",
+            });
+          }}
+        >
+          Add Product
+        </button>
+      </div>
       <section className="d-flex flex-column gap-3 flex-md-row justify-content-md-between">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          type="text"
-          name=""
-          id=""
+          type="search"
           className="form-control product-search"
           placeholder="Search a product name...."
         />
