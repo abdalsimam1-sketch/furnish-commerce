@@ -25,7 +25,10 @@ export const AdminOrders = () => {
       <div className="d-flex flex-column gap-3 flex-md-row justify-content-md-between">
         <input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
           type="text"
           className="form-control product-search"
           placeholder="Search by name, email, phone, or city..."
@@ -33,7 +36,10 @@ export const AdminOrders = () => {
         <select
           className="form-select product-dropdown"
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          onChange={(e) => {
+            setStatus(e.target.value);
+            setPage(1);
+          }}
         >
           <option value="">Choose status</option>
           <option value="cancelled">Cancelled</option>
