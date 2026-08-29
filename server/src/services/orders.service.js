@@ -21,7 +21,11 @@ const getOrdersService = async (page, limit, search, status) => {
 
   const orders = await prisma.order.findMany({
     include: {
-      orderItems: true,
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
     },
     skip,
     take,
