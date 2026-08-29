@@ -1,5 +1,6 @@
 const { BadRequestError } = require("../errors");
 const productsService = require("../services/products.services");
+const { addProductSchema } = require("../validations/products.validation");
 
 const getCategoryProducts = async (req, res) => {
   const { categoryId } = req.params;
@@ -42,9 +43,59 @@ const getNewArrivals = async (req, res) => {
     },
   });
 };
+const addProduct = async (req, res) => {
+  const image = req.file;
+  if (!image) {
+    throw new BadRequestError("Product image is required");
+  }
+  const { error, value } = addProductSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.details[0].message);
+  }
+  const product = await productsService.addProductService(value, image);
+  res.status(201).json({
+    success: true,
+    message: "Product added successfully",
+    data: {
+      product,
+    },
+  });
+};
+const editProduct = async (req, res) => {
+  const productId = req.params.productId;
+  const image = req.file;
 
+  const { error, value } = addProductSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.details[0].message);
+  }
+  const product = await productsService.editProductService(
+    productId,
+    value,
+    image,
+  );
+  res.status(201).json({
+    success: true,
+    message: "Product edited successfully",
+    data: {
+      product,
+    },
+  });
+};
+const deleteProduct = async (req, res) => {
+  const productId = req.params.productId;
+  await productsService.deleteProductService(productId);
+  res.status(200).json({
+    success: true,
+    message: "Product deleted successfully",
+    data: {},
+  });
+};
 module.exports = {
   getCategoryProducts,
   getProducts,
   getNewArrivals,
+  addProduct,
+  editProduct,
+  deleteProduct,
 };

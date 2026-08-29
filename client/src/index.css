@@ -48,7 +48,8 @@ dialog {
   position: absolute;
   font-weight: bold;
 }
-.user-settings-input-error {
+.user-settings-input-error,
+.add-edit-form-error {
   color: var(--color-danger);
   font-weight: bold;
   font-size: 0.75rem;
@@ -193,7 +194,10 @@ dialog {
   border-radius: 50%;
   object-fit: cover;
 }
-
+.add-edit-modal {
+  max-width: 500px;
+  width: 90%;
+}
 @media (min-width: 768px) {
   .product-dropdown {
     max-width: 12rem;
