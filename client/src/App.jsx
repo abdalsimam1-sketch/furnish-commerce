@@ -16,6 +16,7 @@ import { AdminProducts } from "./pages/Admin/AdminProducts";
 import { AdminRoutes } from "./components/AdminRoutes";
 import { AdminDashboard } from "./pages/Admin/AdminDashboard";
 import { AdminOrders } from "./pages/Admin/AdminOrders";
+import { AdminUsers } from "./pages/Admin/AdminUsers";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -84,6 +85,14 @@ function App() {
           element={
             <AdminRoutes>
               <AdminOrders></AdminOrders>
+            </AdminRoutes>
+          }
+        ></Route>
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoutes>
+              <AdminUsers></AdminUsers>
             </AdminRoutes>
           }
         ></Route>
