@@ -32,10 +32,24 @@ export const useOrders = () => {
       retry: false,
       enabled: !!paymentReference,
     });
+  const getOrdersQuery = (page, limit, search, status) =>
+    useQuery({
+      queryKey: ["orders", page, limit, search, status],
+      queryFn: () => orderServices.getOrders(page, limit, search, status),
+    });
+  const updateOrderMutation = useMutation({
+    mutationFn: ({ orderId, newStatus }) =>
+      orderServices.updateOrderStatus(orderId, newStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
   return {
     getSpecificOrderQuery,
     getUsersOrdersQuery,
     cancelOrderMutation,
     getOrderByReferenceQuery,
+    getOrdersQuery,
+    updateOrderMutation,
   };
 };
