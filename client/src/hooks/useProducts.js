@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as productsServices from "../services/products.service";
 
 export const useProducts = (categoryId) => {
+  const queryClient = useQueryClient();
   const getCategoryProductsQuery = useQuery({
     queryKey: ["category products", categoryId],
     queryFn: () => productsServices.getCategoryProducts(categoryId),
@@ -20,5 +21,31 @@ export const useProducts = (categoryId) => {
 
     staleTime: 5 * 60 * 1000,
   });
-  return { getCategoryProductsQuery, getProductsQuery, getNewArrivalsQuery };
+  const addProductMutation = useMutation({
+    mutationFn: productsServices.addProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["products"]);
+    },
+  });
+  const editProductMutation = useMutation({
+    mutationFn: ({ productId, productForm }) =>
+      productsServices.editProduct(productId, productForm),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["products"]);
+    },
+  });
+  const deleteProductMutation = useMutation({
+    mutationFn: productsServices.deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["products"]);
+    },
+  });
+  return {
+    getCategoryProductsQuery,
+    getProductsQuery,
+    getNewArrivalsQuery,
+    addProductMutation,
+    editProductMutation,
+    deleteProductMutation,
+  };
 };
