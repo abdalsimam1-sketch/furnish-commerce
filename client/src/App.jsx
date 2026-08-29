@@ -15,6 +15,7 @@ import { UserSettings } from "./pages/UserSettings";
 import { AdminProducts } from "./pages/Admin/AdminProducts";
 import { AdminRoutes } from "./components/AdminRoutes";
 import { AdminDashboard } from "./pages/Admin/AdminDashboard";
+import { AdminOrders } from "./pages/admin/AdminOrders";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -75,6 +76,14 @@ function App() {
           element={
             <AdminRoutes>
               <AdminDashboard></AdminDashboard>
+            </AdminRoutes>
+          }
+        ></Route>
+        <Route
+          path="/admin/orders"
+          element={
+            <AdminRoutes>
+              <AdminOrders></AdminOrders>
             </AdminRoutes>
           }
         ></Route>
