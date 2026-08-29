@@ -1,17 +1,26 @@
 import { useUsers } from "../../hooks/useUsers";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const AdminUsers = () => {
+  const navigate = useNavigate();
   const { getUsersQuery } = useUsers();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const { data: response } = getUsersQuery(page, 20, search);
   const users = response?.data?.users;
-  console.log(users);
 
   return (
     <div className="container d-flex flex-column gap-4 mb-5 min-vh-100">
       <h3 className="my-4 text-center">Users</h3>
+      <i
+        className="bi bi-chevron-left btn align-self-start"
+        onClick={() => {
+          navigate("/admin/dashboard");
+        }}
+      >
+        Back
+      </i>
       <input
         value={search}
         onChange={(e) => {
