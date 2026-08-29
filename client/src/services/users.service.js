@@ -16,3 +16,14 @@ export const updateAvatar = async (file) => {
   const response = await api.post(`/users/update-avatar`, formData);
   return response.data;
 };
+
+export const getUsers = async (page, limit, search) => {
+  const response = await api.get("/users", {
+    params: {
+      page,
+      limit,
+      search,
+    },
+  });
+  return response.data;
+};
