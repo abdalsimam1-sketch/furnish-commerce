@@ -12,9 +12,9 @@ import { Checkout } from "./pages/Checkout";
 import { OrderSuccess } from "./pages/OrderSuccess";
 import { ProtectedRoutes } from "./components/ProtectedRoutes";
 import { UserSettings } from "./pages/UserSettings";
-import { AdminProducts } from "./pages/admin/AdminProducts";
+import { AdminProducts } from "./pages/Admin/AdminProducts";
 import { AdminRoutes } from "./components/AdminRoutes";
-import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import { AdminDashboard } from "./pages/Admin/AdminDashboard";
 
 import { Routes, Route } from "react-router-dom";
 
