@@ -1,11 +1,15 @@
 const usersRouter = require("express").Router();
 const userController = require("../controllers/users.controller");
 const { authentication } = require("../middleware/authentication");
+const { authorization } = require("../middleware/authorization");
 const rateLimit = require("express-rate-limit");
 
 const { fileUpload } = require("../middleware/fileUpload");
 
 usersRouter.use(authentication);
+
+usersRouter.get("/", authorization("admin"), userController.getUsers);
+
 usersRouter.use(
   rateLimit({
     windowMs: 10 * 60 * 1000,

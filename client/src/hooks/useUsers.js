@@ -1,5 +1,5 @@
 import * as usersServices from "../services/users.service";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useUsers = () => {
   const queryClient = useQueryClient();
@@ -21,10 +21,17 @@ export const useUsers = () => {
       queryClient.invalidateQueries(["me"]);
     },
   });
+  const getUsersQuery = (page, limit, search) =>
+    useQuery({
+      queryFn: () => usersServices.getUsers(page, limit, search),
+      queryKey: ["users", page, limit, search],
+      staleTime: 5 * 60 * 1000,
+    });
 
   return {
     updateAvatarMutation,
     updateUserInfoMutation,
     resetPasswordMutation,
+    getUsersQuery,
   };
 };

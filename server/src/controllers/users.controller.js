@@ -54,8 +54,26 @@ const updateAvatar = async (req, res) => {
   });
 };
 
+const getUsers = async (req, res) => {
+  const { page = 1, limit = 10, search } = req.query;
+  const { users, count, totalPages } = await usersServices.getUsersService(
+    page,
+    limit,
+    search,
+  );
+  res.status(200).json({
+    success: true,
+    message: "Users found",
+    data: {
+      users,
+      count,
+      totalPages,
+    },
+  });
+};
 module.exports = {
   updateAvatar,
   updateUserInfo,
   resetPassword,
+  getUsers,
 };
