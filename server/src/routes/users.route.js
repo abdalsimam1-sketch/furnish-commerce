@@ -7,6 +7,9 @@ const rateLimit = require("express-rate-limit");
 const { fileUpload } = require("../middleware/fileUpload");
 
 usersRouter.use(authentication);
+
+usersRouter.get("/", authorization("admin"), userController.getUsers);
+
 usersRouter.use(
   rateLimit({
     windowMs: 10 * 60 * 1000,
@@ -16,7 +19,6 @@ usersRouter.use(
   }),
 );
 
-usersRouter.get("/", authorization("admin"), userController.getUsers);
 usersRouter.patch("/update-user-info", userController.updateUserInfo);
 usersRouter.patch("/reset-password", userController.resetPassword);
 usersRouter.post(
