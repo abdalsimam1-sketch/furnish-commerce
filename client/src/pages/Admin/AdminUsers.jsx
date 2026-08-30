@@ -7,7 +7,12 @@ export const AdminUsers = () => {
   const { getUsersQuery } = useUsers();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const { data: response } = getUsersQuery(page, 20, search);
+  const {
+    data: response,
+    isLoading,
+    error,
+    isError,
+  } = getUsersQuery(page, 20, search);
   const users = response?.data?.users;
 
   return (
@@ -31,36 +36,50 @@ export const AdminUsers = () => {
         placeholder="Search by name, email or phone"
         className="form-control product-search"
       />
-      <div className="table-responsive flex-grow-1">
-        <table className="table table-hover text-nowrap">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Verified</th>
-              <th>Joined</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users?.map((item) => (
-              <tr key={item?.id}>
-                <td>{item?.name}</td>
-                <td>{item?.email}</td>
-                <td>{item?.phone || "-"}</td>
-                <td>
-                  {item?.isVerified ? (
-                    <span className="badge bg-success">Verified</span>
-                  ) : (
-                    <span className="badge bg-warning">Unverified</span>
-                  )}
-                </td>
-                <td>{new Date(item?.createdAt).toLocaleDateString()}</td>
+      {isError ? (
+        <div className="alert alert-danger">
+          <span>{error?.response?.data?.message}</span>
+        </div>
+      ) : isLoading ? (
+        <div className="min-vh-50 d-flex justify-content-center align-items-center">
+          <span className="spinner-border"></span>
+        </div>
+      ) : users?.length === 0 ? (
+        <span className="text-center">
+          No user was found matching your search
+        </span>
+      ) : (
+        <div className="table-responsive flex-grow-1">
+          <table className="table table-hover text-nowrap">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Verified</th>
+                <th>Joined</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {users?.map((item) => (
+                <tr key={item?.id}>
+                  <td>{item?.name}</td>
+                  <td>{item?.email}</td>
+                  <td>{item?.phone || "-"}</td>
+                  <td>
+                    {item?.isVerified ? (
+                      <span className="badge bg-success">Verified</span>
+                    ) : (
+                      <span className="badge bg-warning">Unverified</span>
+                    )}
+                  </td>
+                  <td>{new Date(item?.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       {users?.length > 0 && (
         <span className="align-self-end d-flex align-items-center">
           <i
