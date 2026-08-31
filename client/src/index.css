@@ -53,7 +53,8 @@ dialog {
   font-weight: bold;
 }
 .user-settings-input-error,
-.add-edit-form-error {
+.add-edit-form-error,
+.category-form-error {
   color: var(--color-danger);
   font-weight: bold;
   font-size: 0.75rem;

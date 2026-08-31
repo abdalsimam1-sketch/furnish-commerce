@@ -14,8 +14,19 @@ import {
   BarChart,
 } from "recharts";
 import { useNavigate } from "react-router-dom";
+import { useCategories } from "../../hooks/useCategories";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export const AdminDashboard = () => {
+  const {
+    register,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
+  const { addNewCategoryMutation } = useCategories();
+
   const navigate = useNavigate();
   const dialogRef = useRef();
 
@@ -26,7 +37,6 @@ export const AdminDashboard = () => {
     isError: newArrivalsIsError,
   } = getNewArrivalsQuery;
   const newArrivals = newArrivalsResponse?.data?.newArrivals;
-  console.log("new arrivals", newArrivals);
 
   const { getDashboardQuery } = useDashboard();
   const {
@@ -36,7 +46,6 @@ export const AdminDashboard = () => {
   } = getDashboardQuery;
 
   const dashboard = dashboardResponse?.data;
-  console.log("dashboard data", dashboard);
 
   const stats = [
     { title: "Total revenue", value: dashboard?.totalRevenue, sign: "₦" },
@@ -57,6 +66,21 @@ export const AdminDashboard = () => {
       </div>
     );
   }
+  const onSubmit = (addCategoryForm) => {
+    addNewCategoryMutation.mutate(
+      {
+        categoryName: addCategoryForm.name,
+        categoryImage: addCategoryForm.image[0],
+      },
+      {
+        onSuccess: () => {
+          toast.success("New category added");
+          reset();
+          dialogRef.current.close();
+        },
+      },
+    );
+  };
   return (
     <div className="container py-4 d-flex flex-column gap-3">
       <div className="d-flex align-items-center justify-content-between">
@@ -194,27 +218,66 @@ export const AdminDashboard = () => {
         </div>
       </section>
       <dialog ref={dialogRef} className="rounded add-category-modal">
-        <div className=" d-flex flex-column gap-3">
-          <h5>Create Category</h5>
-          <div>
-            <label htmlFor="name">Name</label>
-            <input type="text" id="name" className="form-control" />
-          </div>
-          <div>
-            <label htmlFor="image">Category image</label>
-            <input type="file" id="image" className="form-control" />
-          </div>
-          <div className="d-flex gap-3 align-self-end">
-            <button
-              className="btn btn-sm btn-outline-danger"
-              onClick={() => {
-                dialogRef.current.close();
-              }}
-            >
-              Cancel
-            </button>
-            <button className="btn btn-sm bg-dark text-light">Submit</button>
-          </div>
+        <div>
+          <form
+            className="d-flex flex-column gap-3"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <h5>Create Category</h5>
+            <div>
+              <div className="d-flex justify-content-between align-items-center">
+                <label htmlFor="name">Name</label>
+                {errors?.name && (
+                  <span className="category-form-error">
+                    {errors.name.message}
+                  </span>
+                )}
+              </div>
+              <input
+                type="text"
+                id="name"
+                className={`form-control ${errors?.image ? "border-danger" : ""}`}
+                {...register("name", {
+                  required: "Name is required",
+                  min: { value: 3, message: "Minimum length is 3 characters" },
+                  max: {
+                    value: 30,
+                    message: "Maximum length is 30 characters",
+                  },
+                })}
+              />
+            </div>
+            <div>
+              <div className="d-flex justify-content-between align-items-center">
+                <label htmlFor="image">Category image</label>{" "}
+                {errors?.image && (
+                  <span className="category-form-error">
+                    {errors.image.message}
+                  </span>
+                )}
+              </div>
+              <input
+                type="file"
+                id="image"
+                className={`form-control ${errors?.image ? "border-danger" : ""}`}
+                {...register("image", {
+                  required: "Category image is required",
+                })}
+              />
+            </div>
+            <div className="d-flex gap-3 align-self-end">
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => {
+                  dialogRef.current.close();
+                }}
+              >
+                Cancel
+              </button>
+              <button className="btn btn-sm bg-dark text-light">Submit</button>
+            </div>
+          </form>
         </div>
       </dialog>
     </div>
