@@ -17,7 +17,7 @@ import { AdminRoutes } from "./components/AdminRoutes";
 import { AdminDashboard } from "./pages/Admin/AdminDashboard";
 import { AdminOrders } from "./pages/Admin/AdminOrders";
 import { AdminUsers } from "./pages/Admin/AdminUsers";
-
+import { AdminLayout } from "./components/AdminLayout";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -64,38 +64,41 @@ function App() {
             }
           ></Route>
         </Route>
-        <Route
-          path="/admin/products"
-          element={
-            <AdminRoutes>
-              <AdminProducts></AdminProducts>
-            </AdminRoutes>
-          }
-        ></Route>
-        <Route
-          path="/admin/dashboard"
-          element={
-            <AdminRoutes>
-              <AdminDashboard></AdminDashboard>
-            </AdminRoutes>
-          }
-        ></Route>
-        <Route
-          path="/admin/orders"
-          element={
-            <AdminRoutes>
-              <AdminOrders></AdminOrders>
-            </AdminRoutes>
-          }
-        ></Route>
-        <Route
-          path="/admin/users"
-          element={
-            <AdminRoutes>
-              <AdminUsers></AdminUsers>
-            </AdminRoutes>
-          }
-        ></Route>
+        <Route element={<AdminLayout></AdminLayout>}>
+          <Route
+            path="/admin/products"
+            element={
+              <AdminRoutes>
+                <AdminProducts></AdminProducts>
+              </AdminRoutes>
+            }
+          ></Route>
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminRoutes>
+                <AdminDashboard></AdminDashboard>
+              </AdminRoutes>
+            }
+          ></Route>
+          <Route
+            path="/admin/orders"
+            element={
+              <AdminRoutes>
+                <AdminOrders></AdminOrders>
+              </AdminRoutes>
+            }
+          ></Route>
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoutes>
+                <AdminUsers></AdminUsers>
+              </AdminRoutes>
+            }
+          ></Route>
+        </Route>
+
         <Route path="/auth" element={<Auth></Auth>}></Route>
         <Route
           path="/verify-email/:token"
