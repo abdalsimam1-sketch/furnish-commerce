@@ -275,7 +275,11 @@ export const AdminDashboard = () => {
               >
                 Cancel
               </button>
-              <button className="btn btn-sm bg-dark text-light">Submit</button>
+              <button
+                className={`btn btn-sm text-light ${addNewCategoryMutation.isPending ? "bg-secondary" : "bg-dark"}`}
+              >
+                {addNewCategoryMutation.isPending ? "Submitting...." : "Submit"}
+              </button>
             </div>
           </form>
         </div>
