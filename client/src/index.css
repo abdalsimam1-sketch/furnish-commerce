@@ -112,6 +112,13 @@ dialog {
   left: 0;
   width: 100%;
 }
+.admin-menu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 1099;
+  width: 100%;
+}
 
 .sale-image {
   background-image: url(/furniture.jpg);
