@@ -25,6 +25,7 @@ export const useProducts = (categoryId) => {
     mutationFn: productsServices.addProduct,
     onSuccess: () => {
       queryClient.invalidateQueries(["products"]);
+      queryClient.invalidateQueries(["dashboard"]);
     },
   });
   const editProductMutation = useMutation({
@@ -32,12 +33,14 @@ export const useProducts = (categoryId) => {
       productsServices.editProduct(productId, productForm),
     onSuccess: () => {
       queryClient.invalidateQueries(["products"]);
+      queryClient.invalidateQueries(["dashboard"]);
     },
   });
   const deleteProductMutation = useMutation({
     mutationFn: productsServices.deleteProduct,
     onSuccess: () => {
       queryClient.invalidateQueries(["products"]);
+      queryClient.invalidateQueries(["dashboard"]);
     },
   });
   return {
