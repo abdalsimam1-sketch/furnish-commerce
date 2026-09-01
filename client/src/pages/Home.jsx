@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useCategories } from "../hooks/useCategories";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -9,37 +9,45 @@ import { useForm } from "react-hook-form";
 import { useProducts } from "../hooks/useProducts";
 
 export const Home = () => {
+  const navigate = useNavigate();
+  const { hash } = useLocation();
+  const [currentIndex, setCurrentIndex] = useState(0);
   const { categoriesQuery } = useCategories();
   const { getNewArrivalsQuery } = useProducts();
-
-  const { data: response } = getNewArrivalsQuery;
-  const newArrivals = response?.data?.newArrivals;
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const { hash } = useLocation();
-  const navigate = useNavigate();
+  const {
+    data: categoriesResponse,
+    isLoading: categoriesIsLoading,
+    isError: categoriesIsError,
+    error: categoriesError,
+  } = categoriesQuery;
+  const {
+    data: newArrivalsResponse,
+    isLoading: newArrivalsIsLoading,
+    isError: newArrivalsIsError,
+    error: newArrivalsError,
+  } = getNewArrivalsQuery;
+  const newArrivals = newArrivalsResponse?.data?.newArrivals;
+  const categories = categoriesResponse?.data?.categories;
+  const isLoading = newArrivalsIsLoading || categoriesIsLoading;
+  const isError = categoriesIsError || newArrivalsIsError;
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
-
-  const categories = useMemo(
-    () => categoriesQuery.data?.data?.categories ?? [],
-    [categoriesQuery.data],
-  );
   const onSubmit = (email) => {};
-  const currentCategory = categories[currentIndex];
+
+  const currentCategory = categories?.[currentIndex];
 
   useEffect(() => {
-    if (categories.length === 0) {
+    if (categories?.length === 0) {
       return;
     }
     const timer = setInterval(() => {
-      setCurrentIndex((current) => (current + 1) % categories.length);
+      setCurrentIndex((current) => (current + 1) % categories?.length);
     }, 60000);
     return () => clearInterval(timer);
-  }, [categories.length]);
+  }, [categories?.length]);
 
   useEffect(() => {
     if (hash === "#contact") {
@@ -49,13 +57,25 @@ export const Home = () => {
     }
   }, [hash]);
 
-  if (categoriesQuery.isLoading)
+  if (isError) {
+    return (
+      <div className="min-vh-100 d-flex justify-content-center align-items-center">
+        <div className="alert alert-danger">
+          <span>Something went wrong. Please try again.</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading)
     return (
       <div className="min-vh-100 d-flex justify-content-center align-items-center">
         <span className="spinner-border"></span>
       </div>
     );
+
   if (!currentCategory) return null;
+
   return (
     <div className="d-flex flex-column gap-5">
       <section
