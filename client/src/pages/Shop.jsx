@@ -3,6 +3,7 @@ import { useCart } from "../hooks/useCart";
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
 import { LoginRequired } from "../components/LoginRequired";
+import toast from "react-hot-toast";
 
 export const Shop = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -12,13 +13,14 @@ export const Shop = () => {
   const { data: categoriesResponse } = categoriesQuery;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [categoryId, setCategoryId] = useState(null);
-  const { data: resposne, isLoading } = getProductsQuery(
-    page,
-    9,
-    search,
-    categoryId,
-  );
+  const [categoryId, setCategoryId] = useState("");
+  const [adding, setAdding] = useState(null);
+  const {
+    data: resposne,
+    isLoading,
+    isError,
+    error,
+  } = getProductsQuery(page, 9, search, categoryId);
   const products = resposne?.data?.products;
   const categories = categoriesResponse?.data?.categories;
 
@@ -58,8 +60,15 @@ export const Shop = () => {
           ))}
         </select>
       </div>
-      {isLoading ? (
-        <div className="min-vh-100 d-flex justify-content-center align-items-center">
+      {isError ? (
+        <div className="min-vh-100 d-flex justify-content-center align-items-center ">
+          <span className="alert alert-danger">
+            {error?.response?.data?.message ||
+              "Something went wrong, please try again later"}
+          </span>
+        </div>
+      ) : isLoading ? (
+        <div className=" d-flex justify-content-center align-items-center flex-grow-1">
           <span className="spinner-border"></span>
         </div>
       ) : products?.length === 0 ? (
@@ -92,8 +101,9 @@ export const Shop = () => {
                       ₦{Number(product?.price).toLocaleString()}
                     </span>
                     <button
-                      className="btn btn-sm bg-dark text-light"
+                      className={`btn btn-sm text-light ${addToCartMutation.isPending && adding?.id === product.id ? "bg-secondary" : "bg-dark"}`}
                       onClick={() => {
+                        setAdding(product);
                         addToCartMutation.mutate(
                           { productId: product?.id, quantity: 1 },
                           {
@@ -101,12 +111,15 @@ export const Shop = () => {
                               if (error?.response?.status === 401) {
                                 setLoginModalOpen(true);
                               }
+                              toast.error("Item was not added to cart");
                             },
                           },
                         );
                       }}
                     >
-                      Add to Cart
+                      {adding?.id === product.id && addToCartMutation.isPending
+                        ? "Adding to cart..."
+                        : "Add to Cart"}
                     </button>
                   </div>
                 </div>
@@ -116,26 +129,27 @@ export const Shop = () => {
         </div>
       )}
 
-      <span className="d-flex align-items-center gap-2 align-self-end">
-        <span
-          className="bi bi bi-chevron-left btn "
-          onClick={() => {
-            setPage((current) => (current > 1 ? current - 1 : current));
-          }}
-        ></span>
-        <span>
-          Page {products?.length === 0 ? 0 : page} of{" "}
-          {resposne?.data?.totalPages ?? 0}
+      {products?.length > 0 && (
+        <span className="d-flex align-items-center gap-2 align-self-end">
+          <span
+            className="bi bi bi-chevron-left btn "
+            onClick={() => {
+              setPage((current) => (current > 1 ? current - 1 : current));
+            }}
+          ></span>
+          <span>
+            Page {page} of {resposne?.data?.totalPages}
+          </span>
+          <span
+            className="bi bi-chevron-right btn "
+            onClick={() => {
+              setPage((current) =>
+                current < resposne?.data?.totalPages ? current + 1 : current,
+              );
+            }}
+          ></span>
         </span>
-        <span
-          className="bi bi-chevron-right btn "
-          onClick={() => {
-            setPage((current) =>
-              current < resposne?.data?.totalPages ? current + 1 : current,
-            );
-          }}
-        ></span>
-      </span>
+      )}
       {loginModalOpen && (
         <LoginRequired onClose={() => setLoginModalOpen(false)}></LoginRequired>
       )}
