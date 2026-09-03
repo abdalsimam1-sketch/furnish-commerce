@@ -9,7 +9,6 @@ export const ProtectedRoutes = ({ children }) => {
   const navigate = useNavigate();
 
   const user = response?.data?.user;
-  console.log(user);
 
   useEffect(() => {
     if (!isLoading && !user) {

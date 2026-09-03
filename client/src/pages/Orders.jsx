@@ -5,7 +5,7 @@ export const Orders = () => {
   const { getUsersOrdersQuery, cancelOrderMutation } = useOrders();
   const { data: response, isLoading, isError, error } = getUsersOrdersQuery;
   const orders = response?.data?.orders;
-  console.log(orders);
+
   const [selectedOrder, setSelectedOrder] = useState(null);
   const dialogRef = useRef(null);
 
