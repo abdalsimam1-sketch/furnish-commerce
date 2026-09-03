@@ -11,7 +11,6 @@ export const Cart = ({ isOpen, onClose }) => {
     clearCartMutation,
   } = useCart();
   const cart = getCartQuery.data;
-  console.log(cart);
 
   const total = cart?.data?.cart?.reduce(
     (sum, item) => sum + Number(item.product.price) * Number(item.quantity),
@@ -29,6 +28,22 @@ export const Cart = ({ isOpen, onClose }) => {
     );
   };
 
+  if (getCartQuery.isError) {
+    return (
+      <div className="d-flex justify-content-center align-items-center h-100">
+        <span className="alert alert-danger">
+          {getCartQuery.error?.response?.data?.message}
+        </span>
+      </div>
+    );
+  }
+  if (getCartQuery.isPending) {
+    return (
+      <div className="d-flex justify-content-center align-items-center h-100">
+        <span className="spinner-border"></span>
+      </div>
+    );
+  }
   return (
     <div
       className={`cart bg-light p-3 d-flex flex-column gap-3 ${isOpen ? "open" : ""}`}
@@ -39,31 +54,76 @@ export const Cart = ({ isOpen, onClose }) => {
       ></i>
 
       <div className="d-flex flex-column gap-3 flex-grow-1 cart-items">
-        {cart?.data?.cart.map((item) => (
-          <div key={item.id} className="d-flex gap-3 border-bottom pb-3">
-            <img
-              className="cart-img rounded"
-              src={item?.product?.image}
-              alt={item?.product?.name}
-            />
-            <div className="d-flex flex-column flex-grow-1 justify-content-between">
-              <span className="text-secondary fw-bold">
-                {item?.product?.name}
-              </span>
-              <span className="fw-bold">
-                ₦{Number(item?.product?.price).toLocaleString()}
-              </span>
-              <div className="d-flex justify-content-between">
-                {rowIsPending(item) ? (
-                  <span className="spinner-border cart-spinner"></span>
-                ) : (
-                  <span className="d-flex gap-2 align-items-center">
+        {cart?.data?.cart?.length === 0 ? (
+          <p className="text-center">Your cart is currently empty</p>
+        ) : (
+          cart?.data?.cart.map((item) => (
+            <div key={item.id} className="d-flex gap-3 border-bottom pb-3">
+              <img
+                className="cart-img rounded"
+                src={item?.product?.image}
+                alt={item?.product?.name}
+              />
+              <div className="d-flex flex-column flex-grow-1 justify-content-between">
+                <span className="text-secondary fw-bold">
+                  {item?.product?.name}
+                </span>
+                <span className="fw-bold">
+                  ₦{Number(item?.product?.price).toLocaleString()}
+                </span>
+                <div className="d-flex justify-content-between">
+                  {rowIsPending(item) ? (
+                    <span className="spinner-border cart-spinner"></span>
+                  ) : (
+                    <span className="d-flex gap-2 align-items-center">
+                      <button
+                        className="btn"
+                        onClick={() =>
+                          decreaseMutation.mutate(item?.product?.id, {
+                            onSuccess: () => {
+                              toast.success("Item quantity decreased");
+                            },
+                            onError: (error) => {
+                              toast.error(
+                                error?.response?.data?.message ||
+                                  "Something went wrong",
+                              );
+                            },
+                          })
+                        }
+                      >
+                        -
+                      </button>
+                      <span>{item?.quantity}</span>
+                      <button
+                        className="btn"
+                        onClick={() =>
+                          increaseMutation.mutate(item?.product?.id, {
+                            onSuccess: () => {
+                              toast.success("Item quantity increased");
+                            },
+                            onError: (error) => {
+                              toast.error(
+                                error?.response?.data?.message ||
+                                  "Something went wrong",
+                              );
+                            },
+                          })
+                        }
+                      >
+                        +
+                      </button>
+                    </span>
+                  )}
+                  {rowIsPending(item) ? (
+                    <span className="spinner-border cart-spinner"></span>
+                  ) : (
                     <button
                       className="btn"
                       onClick={() =>
-                        decreaseMutation.mutate(item?.product?.id, {
+                        removeItemMutation.mutate(item?.product?.id, {
                           onSuccess: () => {
-                            toast.success("Item quantity decreased");
+                            toast.success("Item removed");
                           },
                           onError: (error) => {
                             toast.error(
@@ -74,55 +134,14 @@ export const Cart = ({ isOpen, onClose }) => {
                         })
                       }
                     >
-                      -
+                      Remove
                     </button>
-                    <span>{item?.quantity}</span>
-                    <button
-                      className="btn"
-                      onClick={() =>
-                        increaseMutation.mutate(item?.product?.id, {
-                          onSuccess: () => {
-                            toast.success("Item quantity increased");
-                          },
-                          onError: (error) => {
-                            toast.error(
-                              error?.response?.data?.message ||
-                                "Something went wrong",
-                            );
-                          },
-                        })
-                      }
-                    >
-                      +
-                    </button>
-                  </span>
-                )}
-                {rowIsPending(item) ? (
-                  <span className="spinner-border cart-spinner"></span>
-                ) : (
-                  <button
-                    className="btn"
-                    onClick={() =>
-                      removeItemMutation.mutate(item?.product?.id, {
-                        onSuccess: () => {
-                          toast.success("Item removed");
-                        },
-                        onError: (error) => {
-                          toast.error(
-                            error?.response?.data?.message ||
-                              "Something went wrong",
-                          );
-                        },
-                      })
-                    }
-                  >
-                    Remove
-                  </button>
-                )}
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
       {cart?.data?.cart?.length > 0 &&
         (clearCartMutation.isPending ? (
@@ -146,18 +165,20 @@ export const Cart = ({ isOpen, onClose }) => {
             Clear cart
           </button>
         ))}
-      <div className="total-section d-flex flex-column gap-5">
-        <h5>Total : ₦{total?.toLocaleString() ?? 0.0} </h5>
-        <button
-          className="btn bg-dark text-light w-100 mb-5 mb-md-0"
-          onClick={() => {
-            navigate("/checkout");
-            onClose();
-          }}
-        >
-          Checkout
-        </button>
-      </div>
+      {cart?.data?.cart?.length !== 0 && (
+        <div className="total-section d-flex flex-column gap-5">
+          <h5>Total : ₦{total?.toLocaleString() ?? 0.0} </h5>
+          <button
+            className="btn bg-dark text-light w-100 mb-5 mb-md-0"
+            onClick={() => {
+              navigate("/checkout");
+              onClose();
+            }}
+          >
+            Checkout
+          </button>
+        </div>
+      )}
     </div>
   );
 };

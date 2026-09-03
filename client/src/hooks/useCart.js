@@ -20,6 +20,9 @@ export const useCart = () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       toast.success("Item added to cart");
     },
+    onError: () => {
+      toast.error("Item was not added to cart");
+    },
   });
 
   const increaseMutation = useMutation({

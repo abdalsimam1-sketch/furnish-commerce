@@ -8,7 +8,12 @@ export const AdminOrders = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
-  const { data: response } = getOrdersQuery(page, 9, search, status);
+  const {
+    data: response,
+    isError,
+    isLoading,
+    error,
+  } = getOrdersQuery(page, 9, search, status);
   const orders = response?.data?.orders;
 
   return (
@@ -48,85 +53,99 @@ export const AdminOrders = () => {
         </select>
       </div>
       <div className="flex-grow-1">
-        <div className="row g-3">
-          {orders?.map((item) => (
-            <details key={item?.id} className="card p-3">
-              <summary>
-                <span
-                  className={`text-capitalize badge ${item.status === "pending" ? "bg-warning" : item.status === "confirmed" ? "bg-success" : "bg-danger"}`}
-                >
-                  {item?.status}
-                </span>
-                <div>
-                  <span>
-                    {item?.firstName} {item?.lastName}
+        {isError ? (
+          <div className="min-vh-100 d-flex justify-content-center align-items-center">
+            <span className="alert alert-danger">
+              {error?.response?.data?.message}
+            </span>
+          </div>
+        ) : isLoading ? (
+          <div className="min-vh-50 d-flex justify-content-center align-items-center">
+            <span className="spinner-border"></span>
+          </div>
+        ) : (
+          <div className="row g-3">
+            {orders?.map((item) => (
+              <details key={item?.id} className="card p-3">
+                <summary>
+                  <span
+                    className={`text-capitalize badge ${item.status === "pending" ? "bg-warning" : item.status === "confirmed" ? "bg-success" : "bg-danger"}`}
+                  >
+                    {item?.status}
                   </span>
-                  <div className="d-flex justify-content-between">
-                    <span>
-                      {new Date(item?.createdAt).toLocaleDateString()}
-                    </span>
-                    <span>₦{Number(item?.total).toLocaleString()}</span>
-                  </div>
-                </div>
-              </summary>
-              <hr />
-              <div className="d-flex flex-column gap-3">
-                <div className="d-flex flex-column">
-                  <h6 className="text-muted fw-bold border-bottom">Contact</h6>
-                  <span>{item?.email}</span>
-                  <span>{item?.phone}</span>
-                </div>
-                <div className="d-flex flex-column">
-                  <h6 className="text-muted fw-bold border-bottom">
-                    Shipping Address
-                  </h6>
-                  <span>
-                    {item?.streetAddress}, {item?.city}, {item?.state},{" "}
-                    {item?.country}. {item?.zipCode}
-                  </span>
-                </div>
-                <div className="d-flex flex-column">
-                  <h6 className="text-muted fw-bold border-bottom">Items</h6>
                   <div>
-                    {item?.orderItems?.map((orderItem) => (
-                      <div
-                        key={orderItem?.id}
-                        className="d-flex justify-content-between border-bottom"
-                      >
-                        <span>{orderItem?.product?.name}</span>
-                        <span>
-                          ₦{Number(orderItem?.price).toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-
+                    <span>
+                      {item?.firstName} {item?.lastName}
+                    </span>
                     <div className="d-flex justify-content-between">
-                      <span className="fw-bold">Total</span>
+                      <span>
+                        {new Date(item?.createdAt).toLocaleDateString()}
+                      </span>
                       <span>₦{Number(item?.total).toLocaleString()}</span>
                     </div>
                   </div>
+                </summary>
+                <hr />
+                <div className="d-flex flex-column gap-3">
+                  <div className="d-flex flex-column">
+                    <h6 className="text-muted fw-bold border-bottom">
+                      Contact
+                    </h6>
+                    <span>{item?.email}</span>
+                    <span>{item?.phone}</span>
+                  </div>
+                  <div className="d-flex flex-column">
+                    <h6 className="text-muted fw-bold border-bottom">
+                      Shipping Address
+                    </h6>
+                    <span>
+                      {item?.streetAddress}, {item?.city}, {item?.state},{" "}
+                      {item?.country}. {item?.zipCode}
+                    </span>
+                  </div>
+                  <div className="d-flex flex-column">
+                    <h6 className="text-muted fw-bold border-bottom">Items</h6>
+                    <div>
+                      {item?.orderItems?.map((orderItem) => (
+                        <div
+                          key={orderItem?.id}
+                          className="d-flex justify-content-between border-bottom"
+                        >
+                          <span>{orderItem?.product?.name}</span>
+                          <span>
+                            ₦{Number(orderItem?.price).toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+
+                      <div className="d-flex justify-content-between">
+                        <span className="fw-bold">Total</span>
+                        <span>₦{Number(item?.total).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="status">Update Order Status</label>
+                    <select
+                      className="form-select product-dropdown"
+                      onChange={(e) => {
+                        updateOrderMutation.mutate({
+                          orderId: item?.id,
+                          newStatus: e.target.value,
+                        });
+                      }}
+                    >
+                      <option value="">Choose status</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="status">Update Order Status</label>
-                  <select
-                    className="form-select product-dropdown"
-                    onChange={(e) => {
-                      updateOrderMutation.mutate({
-                        orderId: item?.id,
-                        newStatus: e.target.value,
-                      });
-                    }}
-                  >
-                    <option value="">Choose status</option>
-                    <option value="cancelled">Cancelled</option>
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                  </select>
-                </div>
-              </div>
-            </details>
-          ))}
-        </div>
+              </details>
+            ))}
+          </div>
+        )}
       </div>
       {orders?.length > 0 && (
         <span className="align-self-end d-flex align-items-center">

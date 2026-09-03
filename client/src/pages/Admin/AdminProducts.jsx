@@ -34,12 +34,12 @@ export const AdminProducts = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const { data: response, isLoading } = getProductsQuery(
-    page,
-    9,
-    search,
-    categoryId,
-  );
+  const {
+    data: response,
+    isLoading,
+    error,
+    isError,
+  } = getProductsQuery(page, 9, search, categoryId);
   const products = response?.data?.products;
   const dialogRef = useRef();
   const deleteRef = useRef();
@@ -126,8 +126,14 @@ export const AdminProducts = () => {
           ))}
         </select>
       </section>
-      {isLoading ? (
-        <div className="min-vh-100 d-flex justify-content-center align-items-center">
+      {isError ? (
+        <div className="min-vh-50 d-flex justify-content-center align-items-center">
+          <span className="alert alert-danger">
+            {error?.response?.data?.message}
+          </span>
+        </div>
+      ) : isLoading ? (
+        <div className="min-vh-50 d-flex justify-content-center align-items-center">
           <span className="spinner-border"></span>
         </div>
       ) : products?.length < 1 ? (
