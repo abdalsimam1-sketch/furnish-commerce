@@ -43,6 +43,7 @@ export const AdminDashboard = () => {
     data: dashboardResponse,
     isLoading: dashboardIsLoading,
     isError: dashboardError,
+    error,
   } = getDashboardQuery;
 
   const dashboard = dashboardResponse?.data;
@@ -63,6 +64,15 @@ export const AdminDashboard = () => {
     return (
       <div className="min-vh-100 d-flex justify-content-center align-items-center">
         <span className="spinner-border"></span>
+      </div>
+    );
+  }
+  if (dashboardError) {
+    return (
+      <div className="min-vh-100 d-flex justify-content-center alig-items-center">
+        <span className=" alert alert-danger">
+          {error?.response?.data?.message}
+        </span>
       </div>
     );
   }
