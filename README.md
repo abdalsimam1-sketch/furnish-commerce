@@ -9,16 +9,16 @@ Furnish Commerce is a full-stack e-commerce platform for browsing products, mana
 ## Screenshot
 
 **Home Page**
-![Home page hero section](image.png)
-![New arrivals section](image-1.png)
-![Featured deals section](image-2.png)
-![Footer and email subscription section](image-3.png)
+![Home page hero section](/docs/image.png)
+![New arrivals section](/docs/image-1.png)
+![Featured deals section](/docs/image-2.png)
+![Footer and email subscription section](/docs/image-3.png)
 
 **Cart**
-![Shopping cart with products, quantity controls, and total](image-5.png)
+![Shopping cart with products, quantity controls, and total](/docs/image-5.png)
 
 **Admin Dashboard**
-![Admin dashboard](image-4.png)
+![Admin dashboard](/docs/image-4.png)
 
 ## Features
 
